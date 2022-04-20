@@ -39,9 +39,9 @@ public interface Personaje {
 
     public void perderRonda();
 
-    public void calcularAtaque();
+    public int calcularAtaque();
 
-    public void calcularDefensa();
+    public int calcularDefensa();
 
 
 }

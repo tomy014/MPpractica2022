@@ -156,13 +156,13 @@ public class Cazador implements Personaje {
     }
 
     @Override
-    public void calcularAtaque() {
-
+    public int calcularAtaque() {
+        return 0;
     }
 
     @Override
-    public void calcularDefensa() {
-
+    public int calcularDefensa() {
+        return 0;
     }
 
     @Override

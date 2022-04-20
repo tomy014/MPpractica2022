@@ -151,22 +151,59 @@ public class Vampiro implements Personaje {
 
     @Override
     public void ganarRonda() {
-
+        puntosSangre += 4;
+        Utilidades.imprimir("Ronda ganada para " + this.nombre);
     }
 
     @Override
     public void perderRonda() {
-
+        Utilidades.imprimir("Ronda perdida para " + this.nombre);
     }
 
     @Override
-    public void calcularAtaque() {
-
+    public int calcularAtaque() {
+        int ataqueTotal = 0;
+        ataqueTotal += this.poder;
+        ataqueTotal += this.armaduraActiva.getModAtq();
+        for(int i = this.armasActivas.size(); i>0; i--){
+            ataqueTotal += this.armasActivas.get(i-1).getModAtq();
+        }
+        for(int i = this.fortalezas.size(); i>0; i--){
+            ataqueTotal += this.fortalezas.get(i-1).getValor();
+        }
+        for(int i = this.debilidades.size(); i>0; i--){
+            ataqueTotal -= this.debilidades.get(i-1).getValor();
+        }
+        if(this.puntosSangre>=5)
+            ataqueTotal += 2;
+        if(puntosSangre>=costeHabilidad){
+            usarHabilidad();
+            ataqueTotal += this.atqHab;
+        }
+        return ataqueTotal;
     }
 
     @Override
-    public void calcularDefensa() {
-
+    public int calcularDefensa() {
+        int defensaTotal = 0;
+        defensaTotal += this.poder;
+        defensaTotal += armaduraActiva.getModDef();
+        for(int i = this.armasActivas.size(); i>0; i--){
+            defensaTotal += this.armasActivas.get(i-1).getModDef();
+        }
+        for(int i = this.fortalezas.size(); i>0; i--){
+            defensaTotal += this.fortalezas.get(i-1).getValor();
+        }
+        for(int i = this.debilidades.size(); i>0; i--){
+            defensaTotal -= this.debilidades.get(i-1).getValor();
+        }
+        if(this.puntosSangre>=5)
+            defensaTotal += 2;
+        if(puntosSangre>=costeHabilidad){
+            usarHabilidad();
+            defensaTotal += this.defHab;
+        }
+        return defensaTotal;
     }
 
     @Override

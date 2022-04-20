@@ -187,13 +187,13 @@ public class Licantropo implements Personaje{
     }
 
     @Override
-    public void calcularAtaque() {
-
+    public int calcularAtaque() {
+        return 0;
     }
 
     @Override
-    public void calcularDefensa() {
-
+    public int calcularDefensa() {
+        return 0;
     }
 
 
