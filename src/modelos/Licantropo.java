@@ -123,8 +123,8 @@ public class Licantropo implements Personaje{
     }
 
     @Override
-    public void setDebilidades(List<Debilidad> Debilidad) {
-        this.debilidades = debilidades;
+    public void setDebilidades(List<Debilidad> d) {
+        this.debilidades = d;
     }
     public void addDebilidades(Debilidad d) {
         this.debilidades.add(d);
@@ -135,8 +135,8 @@ public class Licantropo implements Personaje{
     }
 
     @Override
-    public void setFortalezas(List<Fortaleza> fortalezas) {
-        this.fortalezas = fortalezas;
+    public void setFortalezas(List<Fortaleza> f) {
+        this.fortalezas = f;
     }
 
     public void addFortalezas(Fortaleza f) {
@@ -178,22 +178,58 @@ public class Licantropo implements Personaje{
 
     @Override
     public void ganarRonda() {
-
+        Utilidades.imprimir("Ronda ganada para " + this.nombre);
     }
 
     @Override
     public void perderRonda() {
-
+        rabia ++;
+        Utilidades.imprimir("Ronda perdida para " + this.nombre);
+        //comprobar que sólo sea si le resto vida al licantropo y no a sus esbirros.
     }
 
     @Override
     public int calcularAtaque() {
-        return 0;
+        int ataqueTotal = 0;
+        ataqueTotal += this.poder;
+        ataqueTotal += this.armaduraActiva.getModAtq();
+        for(int i = this.armasActivas.size(); i>0; i--){
+            ataqueTotal += this.armasActivas.get(i-1).getModAtq();
+        }
+        for(int i = this.fortalezas.size(); i>0; i--){
+            ataqueTotal += this.fortalezas.get(i-1).getValor();
+        }
+        for(int i = this.debilidades.size(); i>0; i--){
+            ataqueTotal -= this.debilidades.get(i-1).getValor();
+        }
+        if(rabia>=costeHabilidad){
+            usarHabilidad();
+            ataqueTotal += this.atqHab;
+        }
+        ataqueTotal += rabia;
+        return ataqueTotal;
     }
 
     @Override
     public int calcularDefensa() {
-        return 0;
+        int defensaTotal = 0;
+        defensaTotal += this.poder;
+        defensaTotal += armaduraActiva.getModDef();
+        for(int i = this.armasActivas.size(); i>0; i--){
+            defensaTotal += this.armasActivas.get(i-1).getModDef();
+        }
+        for(int i = this.fortalezas.size(); i>0; i--){
+            defensaTotal += this.fortalezas.get(i-1).getValor();
+        }
+        for(int i = this.debilidades.size(); i>0; i--){
+            defensaTotal -= this.debilidades.get(i-1).getValor();
+        }
+        if(rabia>=costeHabilidad){
+            usarHabilidad();
+            defensaTotal += this.defHab;
+        }
+        defensaTotal += rabia;
+        return defensaTotal;
     }
 
 

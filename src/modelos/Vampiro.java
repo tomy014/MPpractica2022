@@ -124,8 +124,8 @@ public class Vampiro implements Personaje {
     }
 
     @Override
-    public void setDebilidades(List<Debilidad> Debilidad) {
-        this.debilidades = debilidades;
+    public void setDebilidades(List<Debilidad> d) {
+        this.debilidades = d;
     }
     public void addDebilidades(Debilidad d) {
         this.debilidades.add(d);
@@ -136,8 +136,8 @@ public class Vampiro implements Personaje {
     }
 
     @Override
-    public void setFortalezas(List<Fortaleza> fortalezas) {
-        this.fortalezas = fortalezas;
+    public void setFortalezas(List<Fortaleza> f) {
+        this.fortalezas = f;
     }
     public void addFortalezas(Fortaleza f) {
         this.fortalezas.add(f);
@@ -174,12 +174,12 @@ public class Vampiro implements Personaje {
         for(int i = this.debilidades.size(); i>0; i--){
             ataqueTotal -= this.debilidades.get(i-1).getValor();
         }
-        if(this.puntosSangre>=5)
-            ataqueTotal += 2;
         if(puntosSangre>=costeHabilidad){
             usarHabilidad();
             ataqueTotal += this.atqHab;
         }
+        if(this.puntosSangre>=5)
+            ataqueTotal += 2;
         return ataqueTotal;
     }
 
@@ -197,12 +197,12 @@ public class Vampiro implements Personaje {
         for(int i = this.debilidades.size(); i>0; i--){
             defensaTotal -= this.debilidades.get(i-1).getValor();
         }
-        if(this.puntosSangre>=5)
-            defensaTotal += 2;
         if(puntosSangre>=costeHabilidad){
             usarHabilidad();
             defensaTotal += this.defHab;
         }
+        if(this.puntosSangre>=5)
+            defensaTotal += 2;
         return defensaTotal;
     }
 
