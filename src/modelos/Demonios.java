@@ -17,4 +17,14 @@ public class Demonios extends Esbirro{
     public void addEsbirro(Esbirro esbirro) {
         this.esbirros.add(esbirro);
     }
+
+    //Calcula la salud del esbirro, y luego le va sumando la salud de sus otros esbirros.
+    @Override
+    public int calcularSalud() {
+        int suma =getSalud();
+        for(int i = 0; i < this.esbirros.size(); i++){
+            suma += this.esbirros.get(i).calcularSalud();
+        }
+        return suma;
+    }
 }
