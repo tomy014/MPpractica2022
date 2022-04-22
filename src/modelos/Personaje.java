@@ -43,5 +43,4 @@ public interface Personaje {
 
     public int calcularDefensa();
 
-
 }

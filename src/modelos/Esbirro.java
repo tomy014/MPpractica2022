@@ -2,6 +2,8 @@ package modelos;
 
 public abstract class Esbirro {
 
+    //Implementar patrón composite
+
     private String nombre;
     private int salud;
 

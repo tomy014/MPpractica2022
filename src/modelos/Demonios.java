@@ -3,6 +3,7 @@ package modelos;
 import java.util.List;
 
 public class Demonios extends Esbirro{
+    //tiene que usar el patrón composite.
 
     private List<Esbirro> esbirros;
 

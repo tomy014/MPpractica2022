@@ -1,12 +1,17 @@
 package modelos;
 
-public class Usuario {
+import java.io.Serializable;
+import java.util.List;
+
+public class Usuario implements Serializable {
 
     private String nick;
     private String nombre;
     private String password;
     private String numReg;
     private boolean baneado;
+    protected Personaje pj;
+    //tienen 1 personaje, podría no tenerlo si lo da de baja.
 
     public String getNick() {
         return nick;
