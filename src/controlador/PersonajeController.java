@@ -3,6 +3,10 @@ package controlador;
 import modelos.Arma;
 import modelos.Armadura;
 import modelos.Personaje;
+import modelos.Usuario;
+import modelos.factory.CazadoresFactory;
+import modelos.factory.LicantropoFactory;
+import modelos.factory.VampiroFactory;
 
 import java.util.List;
 
@@ -72,14 +76,39 @@ public class PersonajeController {
         return pj;
     }
 
-    public boolean bajaPersonaje(){
+    /**
+     * Modifica el usuario actual y registra un nuevo personaje, en caso de que no tenga uno ya.
+     * @param u es el usuario en el que estamos..
+     * @return Devuelve el usuario con su nuevo personaje ya añadido.
+     * @throws InterruptedException
+     */
+    public Usuario registrarPersonaje(Usuario u) throws InterruptedException {
         Utilidades.limpiarPantalla();
-        int num = Utilidades.pedirEntero("¿Estás seguro? Pulsa 1 para confirmar, otro para cancelar");
-        if (num == 1)
-            return true;
+        Utilidades.imprimir("1. Vampiro");
+        Utilidades.imprimir("2. Licántropo");
+        Utilidades.imprimir("3. Cazador");
+        Utilidades.imprimir("0. Cancelar.");
+        int n = -1;
+        while (n < 0 || n > 3) {
+            n = Utilidades.pedirEntero("Selecciona una opción: ");
+        }
+        if (n == 0)
+            return u;
+        if (n == 1){
+            VampiroFactory personaje = new VampiroFactory();
+            u.setPj(personaje.crearPersonaje());
+        } else if (n ==2) {
+            LicantropoFactory personaje = new LicantropoFactory();
+            u.setPj(personaje.crearPersonaje());
+        } else if (n==3) {
+            CazadoresFactory personaje = new CazadoresFactory();
+            u.setPj(personaje.crearPersonaje());
+        }
         else
-            return false;
+            Utilidades.imprimir("Elección no válida.");
+        Utilidades.imprimir("Personaje creado, volviendo...");
+        Utilidades.pause(2);
+        return u;
     }
-
 
 }
