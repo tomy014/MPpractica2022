@@ -4,6 +4,10 @@ public class Arma extends Equipo{
 
     private boolean tipo;//true = 2 manos, false = 1 mano
 
+    /**
+     *
+     * @return true si es de 2 manos, false si es de 1 mano.
+     */
     public boolean isTipo() {
         return tipo;
     }

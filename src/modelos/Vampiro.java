@@ -7,6 +7,7 @@ import java.util.List;
 public class Vampiro implements Personaje {
 
     private int puntosSangre;
+    private int edad;
 
     private String nombre;
     private List<Arma> armas;
@@ -23,7 +24,6 @@ public class Vampiro implements Personaje {
     private int atqHab;
     private int defHab;
     private int costeHabilidad;
-    private int edad;
 
 
     public String getNombre() {

@@ -23,6 +23,7 @@ public class Cazador implements Personaje {
     private int atqHab;
     private int defHab;
 
+
     public String getNombre() {
         return nombre;
     }

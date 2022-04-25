@@ -52,4 +52,12 @@ public class Usuario implements Serializable {
     public void setBaneado(boolean baneado) {
         this.baneado = baneado;
     }
+
+    public Personaje getPj() {
+        return pj;
+    }
+
+    public void setPj(Personaje pj) {
+        this.pj = pj;
+    }
 }

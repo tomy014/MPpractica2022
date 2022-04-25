@@ -9,11 +9,19 @@ public interface Personaje {
 
     public void setArmas(List<Arma> armas);
 
+    public List<Arma> getArmas();
+
     public void setArmaduras(List<Armadura> armaduras);
+
+    public List<Armadura> getArmaduras();
 
     public void setArmasActivas(List<Arma> armasActivas);
 
+    public List<Arma> getArmasActivas();
+
     public void setArmaduraActiva(Armadura armaduraActiva);
+
+    public Armadura getArmaduraActiva();
 
     public void setEsbirros(List<Esbirro> esbirros);
 
