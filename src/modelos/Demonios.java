@@ -7,6 +7,11 @@ public class Demonios extends Esbirro{
 
     private List<Esbirro> esbirros;
 
+    public Demonios(String nombre, int salud, List<Esbirro> esbirros) {
+        super(nombre, salud);
+        this.esbirros = esbirros;
+    }
+
     public List<Esbirro> getEsbirros() {
         return esbirros;
     }

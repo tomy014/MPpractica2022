@@ -20,6 +20,15 @@ public class PrincipalController {
      * tmb carga historial de desafios.
      */
     public void cargarDatos(){
+        //Operador de pruebas.
+        Operador operador = new Operador();
+        operador.setNick("tomy");
+        operador.setNombre("Alberto");
+        operador.setBaneado(false);
+        operador.setPassword("12345678");
+        operador.setPj(null);
+        operador.setNumReg(null);
+        usuarios.add(operador);
 
     }
 
@@ -116,12 +125,10 @@ public class PrincipalController {
                     encontrado=true;
                     UsuarioController usuarioController = new UsuarioController();
                     //PANTALLA DESAFÍOS, COMPROBAR SI TIENE UN DESAFÍO ANTES DE NADA
-                    if (u.getClass().toString().equals("Operador")){
-                        //LLAMA AL MENU OPERADOR
-                        Operador modificado = usuarioController.menuOperador(u);
-                        this.usuarios.remove(u);
-                        if (modificado !=null)//en caso de que se diera de baja.
-                            this.usuarios.add(modificado);
+                    if (u.getClass().toString().equals("class modelos.Operador")){
+                        List<Usuario> modificados = usuarioController.menuOperador(usuarios, u);
+                        this.usuarios.clear();
+                        usuarios = modificados;
                     }
                     else {
                         Usuario modificado = usuarioController.menuUsuario(u);

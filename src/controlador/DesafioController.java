@@ -1,10 +1,12 @@
 package controlador;
 
 import modelos.Personaje;
+import modelos.Desafios;
+import modelos.Usuario;
 
 public class DesafioController {
 
-    public void iniciarDesafio(Personaje atacante, Personaje desafiado){
+    public void iniciarDesafio(Usuario atacante, Usuario desafiado){
 
     }
 

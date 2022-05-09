@@ -1,9 +1,13 @@
 package modelos;
 
 import java.util.List;
+
+import controlador.PersonajeController;
 import controlador.Utilidades;
 
 public interface Personaje {
+    
+    PersonajeController controller = new PersonajeController();
 
     public void setNombre(String nombre);
 
@@ -25,6 +29,8 @@ public interface Personaje {
 
     public void setEsbirros(List<Esbirro> esbirros);
 
+    public List<Esbirro> getEsbirros();
+
     public void setOro(int oro);
 
     public void setSalud(int salud);
@@ -33,7 +39,11 @@ public interface Personaje {
 
     public void setDebilidades(List<Debilidad> Debilidad);
 
+    public List<Debilidad> getDebilidades();
+
     public void setFortalezas(List<Fortaleza> fortalezas);
+
+    public List<Fortaleza> getFortalezas();
 
     public void setHabilidad(String habilidad);
 
@@ -50,5 +60,10 @@ public interface Personaje {
     public int calcularAtaque();
 
     public int calcularDefensa();
+
+
+    public void modificarDatos();
+
+    public Esbirro crearEsbirros();
 
 }

@@ -1,9 +1,6 @@
 package controlador;
 
-import modelos.Arma;
-import modelos.Armadura;
-import modelos.Personaje;
-import modelos.Usuario;
+import modelos.*;
 import modelos.factory.CazadoresFactory;
 import modelos.factory.LicantropoFactory;
 import modelos.factory.VampiroFactory;
@@ -44,7 +41,7 @@ public class PersonajeController {
         else {
             Arma arma1 = disponibles.get(num);
             armasActivas.add(arma1);
-            num = Utilidades.pedirEntero("Elije otra arma de 1 mano o -1 para terminar: ");
+            num = Utilidades.pedirEntero("Elije otra arma de 1 mano o -1 para cancelar: ");
             if (num == -1)
                 return pj;
             Arma arma2 = disponibles.get(num);
@@ -111,4 +108,219 @@ public class PersonajeController {
         return u;
     }
 
+    public Personaje modificarPersonaje(Personaje pj) {
+        Utilidades.limpiarPantalla();
+        //Llama al método del personaje para modificarlo.
+        Utilidades.imprimir("1. Editar Armas o armaduras");
+        Utilidades.imprimir("2. Editar Fortalezas o debilidades");
+        Utilidades.imprimir("3. Añadir equipamiento");
+        Utilidades.imprimir("4. Añadir Fortalezas o debilidades");
+        Utilidades.imprimir("5. Añadir esbirros");
+        Utilidades.imprimir("6. Modificar sus datos o estadísticas");
+        Utilidades.imprimir("Otra. Cancelar operación");
+        int o = Utilidades.pedirEntero("Ellije una opción: ");
+        switch (o){
+            case 1:
+                Utilidades.imprimir("1. Editar armas");
+                Utilidades.imprimir("2. Editar armaduras");
+                Utilidades.imprimir("Otro. Cancelar");
+                o = Utilidades.pedirEntero("Elije una opción: ");
+                if (o==1) {
+                    return editarArmas(pj);
+                }
+                else if (o==2) {
+                    return editarArmaduras(pj);
+                }
+                break;
+            case 2:
+                Utilidades.imprimir("1. Editar Fortalezas");
+                Utilidades.imprimir("2. Editar debilidades");
+                Utilidades.imprimir("Otro. Cancelar");
+                o = Utilidades.pedirEntero("Elije una opción: ");
+                if (o==1) {
+                    return editarFortalezas(pj);
+                }
+                else if (o==2) {
+                    return editarDebilidades(pj);
+                }
+                break;
+            case 3:
+                Utilidades.imprimir("1. Añadir arma");
+                Utilidades.imprimir("2. Añadir armadura");
+                Utilidades.imprimir("Otro. Cancelar");
+                o = Utilidades.pedirEntero("Elije una opción: ");
+                if (o==1) {
+                    Arma nueva = crearArma();
+                    List<Arma> aux = pj.getArmas();
+                    aux.add(nueva);
+                    pj.setArmas(aux);
+                }
+                else if (o==2) {
+                    Armadura nueva = crearArmadura();
+                    List<Armadura> aux = pj.getArmaduras();
+                    aux.add(nueva);
+                    pj.setArmaduras(aux);
+                }
+                break;
+            case 4:
+                Utilidades.imprimir("1. Añadir Fortaleza");
+                Utilidades.imprimir("2. Añadir Debilidad");
+                Utilidades.imprimir("Otro. Cancelar");
+                o = Utilidades.pedirEntero("Elije una opción: ");
+                if (o==1) {
+                    Fortaleza nueva = crearFortaleza();
+                    List<Fortaleza> aux = pj.getFortalezas();
+                    aux.add(nueva);
+                    pj.setFortalezas(aux);
+                }
+                else if (o==2) {
+                    Debilidad nueva = crearDebilidad();
+                    List<Debilidad> aux = pj.getDebilidades();
+                    aux.add(nueva);
+                    pj.setDebilidades(aux);
+                }
+                break;
+            case 5:
+                List<Esbirro> aux = pj.getEsbirros();
+                Esbirro esbirro = pj.crearEsbirros();
+                if (esbirro != null){
+                    aux.add(esbirro);
+                    pj.setEsbirros(aux);
+                }
+                break;
+            case 6:
+                pj.modificarDatos();
+                return pj;
+            default:
+                return pj;
+        }
+        return pj;
+    }
+
+    private Fortaleza crearFortaleza() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Aviso, esta operación no se puede cancelar.");
+        Fortaleza fortaleza = new Fortaleza();
+        fortaleza.setActivo(false);
+        fortaleza.setNombre(Utilidades.pedirCadena("Nombre de la fortaleza: "));
+        fortaleza.setValor(Utilidades.pedirEntero("Valor de la fortaleza: "));
+        return fortaleza;
+    }
+
+    private Debilidad crearDebilidad() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Aviso, esta operación no se puede cancelar.");
+        Debilidad debilidad = new Debilidad();
+        debilidad.setActivo(false);
+        debilidad.setNombre(Utilidades.pedirCadena("Nombre de la debilidad: "));
+        debilidad.setValor(Utilidades.pedirEntero("Valor de la debilidad: "));
+        return debilidad;
+    }
+
+    private Armadura crearArmadura() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Aviso, esta operación no se puede cancelar.");
+        Armadura armadura = new Armadura();
+        armadura.setNombre(Utilidades.pedirCadena("Nombre de la armadura: "));
+        armadura.setModAtq(Utilidades.pedirEntero("Modificador de ataque: "));
+        armadura.setModDef(Utilidades.pedirEntero("Modificador de defensa: "));
+        return armadura;
+    }
+
+    private Arma crearArma() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Aviso, esta operación no se puede cancelar.");
+        Arma arma = new Arma();
+        arma.setNombre(Utilidades.pedirCadena("Nombre del arma"));
+        if (Utilidades.pedirEntero("Pulse 1 si es de dos manos, otro para una mano.") == 1)
+            arma.setTipo(true);
+        else
+            arma.setTipo(false);
+        arma.setModAtq(Utilidades.pedirEntero("Modificador de ataque: "));
+        arma.setModDef(Utilidades.pedirEntero("Modificador de defensa: "));
+        return arma;
+    }
+
+    private Personaje editarDebilidades(Personaje pj) {
+        List<Debilidad> lista = pj.getDebilidades();
+        int t = lista.size();
+        for (int i = 0; i < t; i++) {
+            Debilidad actual = lista.get(i);
+            Utilidades.imprimir(i+". "+actual.getNombre());
+        }
+        t++;
+        Utilidades.imprimir(t+". Cancelar operación.");
+        int n = -1;
+        while (n <-1 || n > t){
+            n = Utilidades.pedirEntero("Elije una debilidad");
+        }
+        if (n==t){
+            return pj;
+        }
+
+        pj.setDebilidades((List<Debilidad>) pj.getDebilidades().get(n).modificar());
+        return pj;
+    }
+
+    private Personaje editarFortalezas(Personaje pj) {
+        List<Fortaleza> lista = pj.getFortalezas();
+        int t = lista.size();
+        for (int i = 0; i < t; i++) {
+            Fortaleza actual = lista.get(i);
+            Utilidades.imprimir(i+". "+actual.getNombre());
+        }
+        t++;
+        Utilidades.imprimir(t+". Cancelar operación.");
+        int n = -1;
+        while (n <-1 || n > t){
+            n = Utilidades.pedirEntero("Elije una fortaleza");
+        }
+        if (n==t){
+            return pj;
+        }
+        pj.setFortalezas((List<Fortaleza>) pj.getFortalezas().get(n).modificar());
+        return pj;
+    }
+
+    private Personaje editarArmas(Personaje pj) {
+        List<Arma> lista = pj.getArmas();
+        int t = lista.size();
+        for (int i = 0; i < t; i++) {
+            Arma actual = lista.get(i);
+            Utilidades.imprimir(i+". "+actual.getNombre());
+        }
+        t++;
+        Utilidades.imprimir(t+". Cancelar operación.");
+        int n = -1;
+        while (n <-1 || n > t){
+            n = Utilidades.pedirEntero("Elije un arma");
+        }
+        if (n==t){
+            return pj;
+        }
+        pj.setArmas((List<Arma>) pj.getArmas().get(n).modificar());
+        pj.setArmasActivas(null);
+        return pj;
+    }
+
+    private Personaje editarArmaduras(Personaje pj) {
+        List<Armadura> lista = pj.getArmaduras();
+        int t = lista.size();
+        for (int i = 0; i < t; i++) {
+            Armadura actual = lista.get(i);
+            Utilidades.imprimir(i+". "+actual.getNombre());
+        }
+        t++;
+        Utilidades.imprimir(t+". Cancelar operación.");
+        int n = -1;
+        while (n <-1 || n > t){
+            n = Utilidades.pedirEntero("Elije una armadura");
+        }
+        if (n==t){
+            return pj;
+        }
+        pj.setArmaduras((List<Armadura>) pj.getArmaduras().get(n).modificar());
+        pj.setArmaduraActiva(null);
+        return pj;
+    }
 }

@@ -7,6 +7,11 @@ public abstract class Esbirro {
     private String nombre;
     private int salud;
 
+    public Esbirro(String nombre, int salud) {
+        this.nombre = nombre;
+        this.salud = salud;
+    }
+
     public int getSalud() {
         return salud;
     }
@@ -25,4 +30,5 @@ public abstract class Esbirro {
     public int calcularSalud(){
         return getSalud();
     }
+
 }
