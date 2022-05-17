@@ -1,31 +1,55 @@
 package modelos;
 
 import java.util.List;
+
+import controlador.PersonajeController;
 import controlador.Utilidades;
 
 public interface Personaje {
+    
+    PersonajeController controller = new PersonajeController();
 
     public void setNombre(String nombre);
 
+    public String getNombre();
+
     public void setArmas(List<Arma> armas);
+
+    public List<Arma> getArmas();
 
     public void setArmaduras(List<Armadura> armaduras);
 
+    public List<Armadura> getArmaduras();
+
     public void setArmasActivas(List<Arma> armasActivas);
+
+    public List<Arma> getArmasActivas();
 
     public void setArmaduraActiva(Armadura armaduraActiva);
 
+    public Armadura getArmaduraActiva();
+
     public void setEsbirros(List<Esbirro> esbirros);
+
+    public List<Esbirro> getEsbirros();
 
     public void setOro(int oro);
 
+    public int getOro();
+
     public void setSalud(int salud);
+
+    public int getSalud();
 
     public void setPoder(int poder);
 
     public void setDebilidades(List<Debilidad> Debilidad);
 
+    public List<Debilidad> getDebilidades();
+
     public void setFortalezas(List<Fortaleza> fortalezas);
+
+    public List<Fortaleza> getFortalezas();
 
     public void setHabilidad(String habilidad);
 
@@ -43,5 +67,10 @@ public interface Personaje {
 
     public int calcularDefensa();
 
+    public int saludEsbirros();
+
+    public void modificarDatos();
+
+    public Esbirro crearEsbirros();
 
 }

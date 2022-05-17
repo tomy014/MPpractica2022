@@ -2,6 +2,7 @@ package modelos;
 
 import controlador.Utilidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cazador implements Personaje {
@@ -22,6 +23,7 @@ public class Cazador implements Personaje {
     private String habilidad;
     private int atqHab;
     private int defHab;
+
 
     public String getNombre() {
         return nombre;
@@ -161,14 +163,20 @@ public class Cazador implements Personaje {
         int ataqueTotal = 0;
         ataqueTotal += this.poder;
         ataqueTotal += this.armaduraActiva.getModAtq();
-        for(int i = this.armasActivas.size(); i>0; i--){
-            ataqueTotal += this.armasActivas.get(i-1).getModAtq();
+        for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
+            ataqueTotal += this.armasActivas.get(i).getModAtq();
         }
-        for(int i = this.fortalezas.size(); i>0; i--){
-            ataqueTotal += this.fortalezas.get(i-1).getValor();
+        for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
+            ataqueTotal += this.fortalezas.get(i).getValor();
         }
-        for(int i = this.debilidades.size(); i>0; i--){
-            ataqueTotal -= this.debilidades.get(i-1).getValor();
+        for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
+            ataqueTotal -= this.debilidades.get(i).getValor();
         }
         ataqueTotal += atqHab;
         ataqueTotal += voluntad;
@@ -180,19 +188,103 @@ public class Cazador implements Personaje {
         int defensaTotal = 0;
         defensaTotal += this.poder;
         defensaTotal += armaduraActiva.getModDef();
-        for(int i = this.armasActivas.size(); i>0; i--){
-            defensaTotal += this.armasActivas.get(i-1).getModDef();
+        for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
+            defensaTotal += this.armasActivas.get(i).getModDef();
         }
-        for(int i = this.fortalezas.size(); i>0; i--){
-            defensaTotal += this.fortalezas.get(i-1).getValor();
+        for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
+            defensaTotal += this.fortalezas.get(i).getValor();
         }
-        for(int i = this.debilidades.size(); i>0; i--){
-            defensaTotal -= this.debilidades.get(i-1).getValor();
+        for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
+            defensaTotal -= this.debilidades.get(i).getValor();
         }
         defensaTotal += defHab;
         defensaTotal += voluntad;
         return defensaTotal;
     }
+
+    @Override
+    public int saludEsbirros() {
+        List<Esbirro> aux = this.esbirros;
+        int suma = 0;
+        if (aux==null)
+            return 0;
+        for (Esbirro e: aux) {
+            if (e==null)
+                continue;
+            suma += e.calcularSalud();
+        }
+        return suma;
+    }
+
+    @Override
+    public void modificarDatos() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Aviso, este método no se puede cancelar,");
+        Utilidades.imprimir("Si no quieres cambiar un valor, escribe el mismo.");
+        Utilidades.imprimir("Nombre: "+this.nombre);
+        setNombre(Utilidades.pedirCadena("Nuevo nombre: "));
+        Utilidades.imprimir("Nombre habilidad: "+this.habilidad);
+        setHabilidad(Utilidades.pedirCadena("Nuevo nomHabilidad: "));
+        Utilidades.imprimir("Ataque habilidad: "+Integer.toString(this.atqHab));
+        setAtqHab(Utilidades.pedirEntero("Nuevo valor: "));
+        Utilidades.imprimir("Defensa habilidad: "+Integer.toString(this.defHab));
+        setDefHab(Utilidades.pedirEntero("Nuevo valor: "));
+        Utilidades.imprimir("Poder: "+this.poder);
+        setPoder(Utilidades.pedirEntero("Nuevo valor: "));
+        Utilidades.imprimir("Oro actual: "+this.oro);
+        setOro(Utilidades.pedirEntero("Nuevo valor: "));
+        Utilidades.imprimir("Salud del personaje: "+this.salud);
+        setSalud(Utilidades.pedirEntero("Nuevo valor: "));
+
+        Utilidades.imprimir("Voluntad actual: "+this.voluntad);
+        setVoluntad(Utilidades.pedirEntero("Nuevo valor: "));
+    }
+
+    @Override
+    public Esbirro crearEsbirros() {
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("1. Añadir Ghoul");
+        Utilidades.imprimir("2. Añadir demonio");
+        Utilidades.imprimir(("3. Añadir humano"));
+        Utilidades.imprimir("Otro. Cancelar");
+        int o = Utilidades.pedirEntero("Elije una opción:");
+        if (o==1){
+            String esbirroNombre = Utilidades.pedirCadena("Nombre del esbirro: ");
+            int esbirroSalud = Utilidades.pedirEntero("Salud del esbirro: ");
+            String esbirroDependencia = Utilidades.pedirCadena("Descripcion de su dependencia: ");
+            int valorDependencia = Utilidades.pedirEntero("Valor de la dependencia: ");
+            Ghouls ghoul = new Ghouls(esbirroNombre,esbirroSalud,valorDependencia,esbirroDependencia);
+            return ghoul;
+        }
+        else if(o==2){
+            String esbirroNombre = Utilidades.pedirCadena("Nombre del esbirro: ");
+            int esbirroSalud = Utilidades.pedirEntero("Salud del esbirro: ");
+            int e = Utilidades.pedirEntero("Si tiene otros esbirros pulse 1. ");
+            Demonios demonio;
+            if (e==1){
+                List<Esbirro> subLista = new ArrayList<Esbirro>();
+                subLista.add(crearEsbirros());
+                demonio = new Demonios(esbirroNombre,esbirroSalud,subLista);
+            }
+            else
+                demonio = new Demonios(esbirroNombre,esbirroSalud,null);
+            return demonio;
+        } else if (o==3) {
+            String esbirroNombre = Utilidades.pedirCadena("Nombre del esbirro: ");
+            int esbirroSalud = Utilidades.pedirEntero("Salud del esbirro: ");
+            int lealtad = Utilidades.pedirEntero("Valor de su lealtad");
+            Humanos humano = new Humanos(esbirroNombre,esbirroSalud,lealtad);
+            return humano;
+        } else
+            return null;
+    }
+
 
     @Override
     public void setHabilidad(String habilidad) {
@@ -220,7 +312,6 @@ public class Cazador implements Personaje {
     public int getDefHab(){
         return defHab;
     }
-
 
     public int getVoluntad() {
         return voluntad;

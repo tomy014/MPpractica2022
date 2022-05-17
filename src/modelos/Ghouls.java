@@ -5,6 +5,12 @@ public class Ghouls extends Esbirro{
     private int dependencia;
     private String descripcion;
 
+    public Ghouls(String nombre, int salud, int dependencia, String descripcion) {
+        super(nombre, salud);
+        this.dependencia = dependencia;
+        this.descripcion = descripcion;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }

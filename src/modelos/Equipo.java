@@ -29,4 +29,7 @@ public abstract class Equipo {
     public void setModAtq(int modAtq) {
         this.modAtq = modAtq;
     }
+
+    public abstract Equipo modificar();
+
 }

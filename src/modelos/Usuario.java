@@ -1,12 +1,18 @@
 package modelos;
 
-public class Usuario {
+import java.io.Serializable;
+import java.util.List;
+
+public class Usuario implements Serializable {
 
     private String nick;
     private String nombre;
     private String password;
     private String numReg;
     private boolean baneado;
+    private int oro = 0;
+    protected Personaje pj;
+    //tienen 1 personaje, podría no tenerlo si lo da de baja.
 
     public String getNick() {
         return nick;
@@ -46,5 +52,25 @@ public class Usuario {
 
     public void setBaneado(boolean baneado) {
         this.baneado = baneado;
+    }
+
+    public Personaje getPj() {
+        return pj;
+    }
+
+    public void setPj(Personaje pj) {
+        this.pj = pj;
+        if (this.pj!=null)
+            this.setOro(getPj().getOro());
+        else
+            this.setOro(0);
+    }
+
+    public int getOro() {
+        return oro;
+    }
+
+    public void setOro(int oro) {
+        this.oro = oro;
     }
 }
