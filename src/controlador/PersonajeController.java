@@ -5,6 +5,7 @@ import modelos.factory.CazadoresFactory;
 import modelos.factory.LicantropoFactory;
 import modelos.factory.VampiroFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonajeController {
@@ -23,6 +24,11 @@ public class PersonajeController {
         }
         Utilidades.imprimir("");
         List<Arma> disponibles = pj.getArmas();
+        if (disponibles.size()==0){
+            Utilidades.imprimir("No tienes armas, volviendo...");
+            Utilidades.pause(1);
+            return pj;
+        }
         for (int i = 0; i < disponibles.size(); i++) {
             Arma actual = disponibles.get(i);
             if(actual.isTipo())
@@ -31,7 +37,7 @@ public class PersonajeController {
                 Utilidades.imprimir(i + ": "+ actual.getNombre() + ", de 1 mano");
         }
         int num = Utilidades.pedirEntero("Elije nuevo arma, -1 para cancelar: ");
-        if (num == -1)
+        if (num <0 || num >disponibles.size())
             return pj;
         if (disponibles.get(num).isTipo()){
             armasActivas.clear();
@@ -42,7 +48,7 @@ public class PersonajeController {
             Arma arma1 = disponibles.get(num);
             armasActivas.add(arma1);
             num = Utilidades.pedirEntero("Elije otra arma de 1 mano o -1 para cancelar: ");
-            if (num == -1)
+            if (num <0 || num >disponibles.size())
                 return pj;
             Arma arma2 = disponibles.get(num);
             if (arma2.isTipo() || arma1.equals(arma2))
@@ -51,7 +57,7 @@ public class PersonajeController {
                 armasActivas.add(arma2);
             pj.setArmasActivas(armasActivas);
         }
-        Utilidades.imprimir("Armas cambiadas. Volviendo...");
+        Utilidades.imprimir("Volviendo...");
         Utilidades.pause(2);
         return pj;
     }
@@ -60,12 +66,17 @@ public class PersonajeController {
         Utilidades.limpiarPantalla();
         Armadura armadura = pj.getArmaduraActiva();
         List<Armadura> disponibles = pj.getArmaduras();
+        if (disponibles.size()==0){
+            Utilidades.imprimir("No tienes armadura, volviendo...");
+            Utilidades.pause(1);
+            return pj;
+        }
         for (int i = 0; i < disponibles.size(); i++) {
             Armadura actual = disponibles.get(i);
             Utilidades.imprimir(i + ": " + actual.getNombre());
         }
         int num = Utilidades.pedirEntero("Elije nueva armadura, -1 para cancelar: ");
-        if (num == -1)
+        if (num <0 || num > disponibles.size())
             return pj;
         pj.setArmaduraActiva(disponibles.get(num));
         Utilidades.imprimir("Armadura cambiada. Volviendo...");
@@ -308,6 +319,8 @@ public class PersonajeController {
         int t = lista.size();
         for (int i = 0; i < t; i++) {
             Armadura actual = lista.get(i);
+            if (actual==null)
+                continue;
             Utilidades.imprimir(i+". "+actual.getNombre());
         }
         t++;
@@ -323,4 +336,47 @@ public class PersonajeController {
         pj.setArmaduraActiva(null);
         return pj;
     }
+
+    public Personaje activarFortalezas(Personaje pj){
+        List<Fortaleza> lista = new ArrayList<Fortaleza>();
+        Utilidades.imprimir("Lista de fortalezas de "+pj.getNombre());
+        for (Fortaleza f:pj.getFortalezas()) {
+            if (f==null)
+                continue;
+            int act = -1;
+            Utilidades.imprimir("Fortaleza: "+f.getNombre());
+            while (act<0 || act>1){
+                Utilidades.pedirEntero("Activar 1, no activa 0");
+            }
+            if (act==0)
+                f.setActivo(false);
+            else
+                f.setActivo(true);
+            lista.add(f);
+        }
+        pj.setFortalezas(lista);
+        return pj;
+    }
+
+    public Personaje activarDebilidades(Personaje pj){
+        List<Debilidad> lista = new ArrayList<Debilidad>();
+        Utilidades.imprimir("Lista de debilidades de "+pj.getNombre());
+        for (Debilidad d:pj.getDebilidades()) {
+            if (d==null)
+                continue;
+            int act = -1;
+            Utilidades.imprimir("Debilidad: "+d.getNombre());
+            while (act<0 || act>1){
+                Utilidades.pedirEntero("Activar 1, no activa 0");
+            }
+            if (act==0)
+                d.setActivo(false);
+            else
+                d.setActivo(true);
+            lista.add(d);
+        }
+        pj.setDebilidades(lista);
+        return pj;
+    }
+
 }

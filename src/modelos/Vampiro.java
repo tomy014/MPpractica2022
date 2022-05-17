@@ -167,12 +167,18 @@ public class Vampiro implements Personaje {
         ataqueTotal += this.poder;
         ataqueTotal += this.armaduraActiva.getModAtq();
         for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
             ataqueTotal += this.armasActivas.get(i).getModAtq();
         }
         for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
             ataqueTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
             ataqueTotal -= this.debilidades.get(i).getValor();
         }
         if(puntosSangre>=costeHabilidad){
@@ -190,12 +196,18 @@ public class Vampiro implements Personaje {
         defensaTotal += this.poder;
         defensaTotal += armaduraActiva.getModDef();
         for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
             defensaTotal += this.armasActivas.get(i).getModDef();
         }
         for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
             defensaTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
             defensaTotal -= this.debilidades.get(i).getValor();
         }
         if(puntosSangre>=costeHabilidad){
@@ -205,6 +217,20 @@ public class Vampiro implements Personaje {
         if(this.puntosSangre>=5)
             defensaTotal += 2;
         return defensaTotal;
+    }
+
+    @Override
+    public int saludEsbirros() {
+        List<Esbirro> aux = this.esbirros;
+        int suma = 0;
+        if (aux==null)
+            return 0;
+        for (Esbirro e: aux) {
+            if (e==null)
+                continue;
+            suma += e.calcularSalud();
+        }
+        return suma;
     }
 
     @Override
@@ -255,13 +281,17 @@ public class Vampiro implements Personaje {
             int esbirroSalud = Utilidades.pedirEntero("Salud del esbirro: ");
             int e = Utilidades.pedirEntero("Si tiene otros esbirros pulse 1. ");
             Demonios demonio;
-            if (e==1){
-                List<Esbirro> subLista = new ArrayList<Esbirro>();
+            List<Esbirro> subLista = new ArrayList<Esbirro>();
+            while (e==1){
                 subLista.add(crearEsbirros());
-                demonio = new Demonios(esbirroNombre,esbirroSalud,subLista);
+                e = Utilidades.pedirEntero("Si tiene otros esbirros este esbirro pulse 1. ");
             }
+            demonio = new Demonios(esbirroNombre,esbirroSalud,subLista);
+            Utilidades.imprimir("Lista de esbirros añadida.");
+            /*
             else
                 demonio = new Demonios(esbirroNombre,esbirroSalud,null);
+            */
             return demonio;
         }
         else

@@ -1,17 +1,22 @@
 package controlador;
 
-import modelos.Licantropo;
-import modelos.Operador;
-import modelos.Personaje;
-import modelos.Usuario;
+import Observer.DesafiosObserver;
+import Observer.EventListener;
+import modelos.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
-public class UsuarioController {
+public class UsuarioController implements EventListener {
 
     //Podría tener una lista de todos los usuarios de la aplicación, y devolverla al principal para guardarlos
     //y así hacer que sea persistente.
 
+
+    @Override
+    public void notificar() {
+
+    }
 
     public boolean darseBaja() throws InterruptedException {
         Utilidades.limpiarPantalla();
@@ -43,8 +48,19 @@ public class UsuarioController {
 
     }
 
-    public void verRanking(){
+    public void verRanking() throws InterruptedException {
+        PrincipalController auxController = new PrincipalController();
+        auxController.mostrarRanking();
+    }
 
+    private void verDesafios() throws InterruptedException {
+        DesafioController desafioController = new DesafioController();
+        desafioController.mostrarDesafios();
+    }
+
+    private void verCombates(Usuario u) throws InterruptedException {
+        DesafioController desafioController = new DesafioController();
+        desafioController.mostrarDesafios(u);
     }
 
     public boolean bajaPersonaje(Personaje pj) throws InterruptedException {
@@ -130,12 +146,15 @@ public class UsuarioController {
                         break;
                     case 4:
                         //Mandar desafio
+                        lanzarDesafio(usuario);
                         break;
                     case 5:
                         //Historial de combates
+                        verCombates(usuario);
                         break;
                     case 6:
                         //Ver Ranking
+                        verRanking();
                         break;
                     case 7:
                         if(darseBaja())
@@ -188,6 +207,16 @@ public class UsuarioController {
                         break;
                     case 2:
                         //Validar desafíos pendientes.
+                        verDesafios();//Pone la lista de desafios en pantalla
+                        int op = Utilidades.pedirEntero("Selecciona desafio o -1 cancelar: ");
+                        DesafioController desafioController = new DesafioController();
+                        boolean validado=desafioController.validarDesafio(op);
+                        if (validado){
+                            //añadir este usuario a la lista de suscriptores de notificacion desafio
+                            DesafiosObserver ob= new DesafiosObserver();
+                            ob.notificarDesafio();
+
+                        }
                         break;
                     case 3:
                         //Banear usuarios
@@ -225,6 +254,8 @@ public class UsuarioController {
                         break;
                     case 5:
                         //Ver historial de desafíos
+                        verDesafios();
+
                         break;
                     case 6:
                         if(darseBaja()){
@@ -246,28 +277,72 @@ public class UsuarioController {
         return usuarios;
     }
 
-    private Usuario elegirUsuario(List<Usuario> usuarios, String motivo) throws InterruptedException {
+    public Usuario elegirUsuario(List<Usuario> usuarios, String motivo) throws InterruptedException {
         int t = usuarios.size();
         if (usuarios==null || t==0){
             Utilidades.imprimir("No hay usuarios registrados, volviendo...");
             Utilidades.pause(2);
             return null;
         }
+        Utilidades.limpiarPantalla();
         for (int i = 0; i < t; i++) {
-            Utilidades.limpiarPantalla();
+            if (usuarios.get(i)==null)
+                continue;
             Utilidades.imprimir(i +". "+usuarios.get(i).getNick());
         }
-        t++;
-        Utilidades.imprimir(t+". Para cancelar operación.");
+        //t++;
+        Utilidades.imprimir("Otro para cancelar operación.");
         int n = -1;
-        while (n <-1 || n > t){
-            n = Utilidades.pedirEntero(motivo);
-        }
-        if (n==t){
+        n = Utilidades.pedirEntero(motivo);
+        if (n>=t || n<0){
             return null;
         }
         return usuarios.get(n);
     }
 
+    public boolean lanzarDesafio(Usuario usuario) throws InterruptedException {
+        Utilidades.limpiarPantalla();
+        String nick = Utilidades.pedirCadena("Usuario a desafiar (Nick): ");
+        if (nick.equals(usuario.getNick())){
+            Utilidades.imprimir("No te puedes desafiar a ti mismo, volviendo...");
+            Utilidades.pause(2);
+            return false;
+        }
+        PrincipalController auxController = new PrincipalController();
+        Usuario rival = auxController.buscarUsuario(nick);
+        if (rival==null){
+            Utilidades.imprimir("No existe dicho usuario, volviendo...");
+            Utilidades.pause(2);
+            return false;
+        }
 
+        int oro = usuario.getPj().getOro();
+        if (oro<=0){
+            Utilidades.imprimir("No tienes suficiente oro, volviendo...");
+            Utilidades.pause(2);
+            return false;
+        }
+        int apuesta =Utilidades.pedirEntero("Oro a apostar, negativo o cero para cancelar: ");
+        if (apuesta<=0)
+            return false;
+        if (apuesta>oro){
+            Utilidades.imprimir("No tienes ese oro disponible, volviendo...");
+            Utilidades.pause(2);
+            return false;
+        }
+        //Crear desafío
+        DesafioController desafioController = new DesafioController();
+        Desafio desafio = new Desafio();
+        desafio.setDesafiado(rival);
+        desafio.setDesafiante(usuario);
+        desafio.setFecha(LocalDate.now());
+        desafio.setOroApostado(oro);
+        desafio.setGanador(-1);
+        desafio.setOroGanado(-1);
+        desafio.setValidado(false);
+        desafioController.anyadirDesafio(desafio);
+        Utilidades.imprimir("Desafío guardado, pendiente de aprobación, volviendo...");
+        Utilidades.pause(2);
+        return true;
+    }
 }

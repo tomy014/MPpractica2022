@@ -28,7 +28,13 @@ public class Demonios extends Esbirro{
     @Override
     public int calcularSalud() {
         int suma =getSalud();
+        if (this.esbirros==null)
+            return suma;
         for(int i = 0; i < this.esbirros.size(); i++){
+            if (this.esbirros==null)
+                continue;
+            if (this.esbirros.get(i)==null)
+                continue;
             suma += this.esbirros.get(i).calcularSalud();
         }
         return suma;

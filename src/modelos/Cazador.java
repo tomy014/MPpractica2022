@@ -164,12 +164,18 @@ public class Cazador implements Personaje {
         ataqueTotal += this.poder;
         ataqueTotal += this.armaduraActiva.getModAtq();
         for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
             ataqueTotal += this.armasActivas.get(i).getModAtq();
         }
         for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
             ataqueTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
             ataqueTotal -= this.debilidades.get(i).getValor();
         }
         ataqueTotal += atqHab;
@@ -183,17 +189,37 @@ public class Cazador implements Personaje {
         defensaTotal += this.poder;
         defensaTotal += armaduraActiva.getModDef();
         for(int i = 0; i<this.armasActivas.size(); i++){
+            if (this.armasActivas.get(i)==null)
+                continue;
             defensaTotal += this.armasActivas.get(i).getModDef();
         }
         for(int i = 0; i<this.fortalezas.size(); i++){
+            if (this.fortalezas.get(i)==null)
+                continue;
             defensaTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
+            if (this.debilidades.get(i)==null)
+                continue;
             defensaTotal -= this.debilidades.get(i).getValor();
         }
         defensaTotal += defHab;
         defensaTotal += voluntad;
         return defensaTotal;
+    }
+
+    @Override
+    public int saludEsbirros() {
+        List<Esbirro> aux = this.esbirros;
+        int suma = 0;
+        if (aux==null)
+            return 0;
+        for (Esbirro e: aux) {
+            if (e==null)
+                continue;
+            suma += e.calcularSalud();
+        }
+        return suma;
     }
 
     @Override

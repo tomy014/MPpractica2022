@@ -27,6 +27,7 @@ public abstract class Esbirro {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
     public int calcularSalud(){
         return getSalud();
     }

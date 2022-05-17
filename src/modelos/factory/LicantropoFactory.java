@@ -1,7 +1,11 @@
 package modelos.factory;
 
 import controlador.Utilidades;
+import modelos.Arma;
+import modelos.Armadura;
 import modelos.Licantropo;
+
+import java.util.ArrayList;
 
 public class LicantropoFactory extends PersonajeFactory{
 
@@ -17,6 +21,11 @@ public class LicantropoFactory extends PersonajeFactory{
         licantropo.setOro(500);
         licantropo.setSalud(5);
         licantropo.setRabia(Utilidades.pedirEntero("Rabia inicial: "));
+
+        licantropo.setArmaduras(new ArrayList<Armadura>());
+        licantropo.setArmas(new ArrayList<Arma>());
+        licantropo.setArmasActivas(new ArrayList<Arma>());
+        licantropo.setArmaduraActiva(new Armadura());
 
         return licantropo;
     }

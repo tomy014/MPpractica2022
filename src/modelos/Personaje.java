@@ -11,6 +11,8 @@ public interface Personaje {
 
     public void setNombre(String nombre);
 
+    public String getNombre();
+
     public void setArmas(List<Arma> armas);
 
     public List<Arma> getArmas();
@@ -33,7 +35,11 @@ public interface Personaje {
 
     public void setOro(int oro);
 
+    public int getOro();
+
     public void setSalud(int salud);
+
+    public int getSalud();
 
     public void setPoder(int poder);
 
@@ -61,6 +67,7 @@ public interface Personaje {
 
     public int calcularDefensa();
 
+    public int saludEsbirros();
 
     public void modificarDatos();
 

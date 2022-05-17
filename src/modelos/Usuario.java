@@ -10,6 +10,7 @@ public class Usuario implements Serializable {
     private String password;
     private String numReg;
     private boolean baneado;
+    private int oro = 0;
     protected Personaje pj;
     //tienen 1 personaje, podría no tenerlo si lo da de baja.
 
@@ -59,5 +60,17 @@ public class Usuario implements Serializable {
 
     public void setPj(Personaje pj) {
         this.pj = pj;
+        if (this.pj!=null)
+            this.setOro(getPj().getOro());
+        else
+            this.setOro(0);
+    }
+
+    public int getOro() {
+        return oro;
+    }
+
+    public void setOro(int oro) {
+        this.oro = oro;
     }
 }

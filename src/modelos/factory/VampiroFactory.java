@@ -1,7 +1,11 @@
 package modelos.factory;
 
 import controlador.Utilidades;
+import modelos.Arma;
+import modelos.Armadura;
 import modelos.Vampiro;
+
+import java.util.ArrayList;
 
 public class VampiroFactory extends PersonajeFactory{
 
@@ -18,6 +22,11 @@ public class VampiroFactory extends PersonajeFactory{
         vampiro.setSalud(5);
         vampiro.setEdad(Utilidades.pedirEntero("Edad del vampiro: "));
         vampiro.setPuntosSangre(Utilidades.pedirEntero("Puntos de sangre iniciales: "));
+
+        vampiro.setArmaduras(new ArrayList<Armadura>());
+        vampiro.setArmas(new ArrayList<Arma>());
+        vampiro.setArmasActivas(new ArrayList<Arma>());
+        vampiro.setArmaduraActiva(new Armadura());
 
         return vampiro;
     }
