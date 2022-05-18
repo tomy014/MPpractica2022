@@ -2,7 +2,9 @@ package modelos;
 
 import controlador.Utilidades;
 
-public class Fortaleza extends Modificadores{
+import java.io.Serializable;
+
+public class Fortaleza extends Modificadores  implements Serializable {
 
 
 

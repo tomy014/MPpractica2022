@@ -1,6 +1,8 @@
 package modelos;
 
-public class Debilidad extends Modificadores{
+import java.io.Serializable;
+
+public class Debilidad extends Modificadores implements Serializable {
 
 
 }

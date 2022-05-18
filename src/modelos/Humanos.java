@@ -2,7 +2,9 @@ package modelos;
 
 import controlador.Utilidades;
 
-public class Humanos extends Esbirro{
+import java.io.Serializable;
+
+public class Humanos extends Esbirro implements Serializable {
 
     private int lealtad;    //0,1,2 = BAJA,MEDIA,ALTA
 

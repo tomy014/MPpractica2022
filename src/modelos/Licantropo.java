@@ -2,10 +2,11 @@ package modelos;
 
 import controlador.Utilidades;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Licantropo implements Personaje{
+public class Licantropo implements Personaje, Serializable {
 
     private int rabia;
 

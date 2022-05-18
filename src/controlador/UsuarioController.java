@@ -4,14 +4,11 @@ import Observer.DesafiosObserver;
 import Observer.EventListener;
 import modelos.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 public class UsuarioController implements EventListener {
-
-    //Podría tener una lista de todos los usuarios de la aplicación, y devolverla al principal para guardarlos
-    //y así hacer que sea persistente.
-
 
     @Override
     public void notificar() {
@@ -29,36 +26,17 @@ public class UsuarioController implements EventListener {
         return false;
     }
 
-    public void desafiarUsuario(){
-
-    }
-
-    /**
-     * Mostrar en pantalla todos los combates de la aplicación.
-     */
-    public void consultarOro(){
-
-    }
-
-    public void rechazarDesafio(){
-
-    }
-
-    public void acerptarDesafio(){
-
-    }
-
-    public void verRanking() throws InterruptedException {
+    public void verRanking() throws InterruptedException, IOException, ClassNotFoundException {
         PrincipalController auxController = new PrincipalController();
         auxController.mostrarRanking();
     }
 
-    private void verDesafios() throws InterruptedException {
+    private void verDesafios() throws InterruptedException, IOException, ClassNotFoundException {
         DesafioController desafioController = new DesafioController();
         desafioController.mostrarDesafios();
     }
 
-    private void verCombates(Usuario u) throws InterruptedException {
+    private void verCombates(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
         DesafioController desafioController = new DesafioController();
         desafioController.mostrarDesafios(u);
     }
@@ -79,7 +57,7 @@ public class UsuarioController implements EventListener {
         return false;
     }
 
-    public Usuario menuUsuario(Usuario usuario) throws InterruptedException {
+    public Usuario menuUsuario(Usuario usuario) throws InterruptedException, IOException, ClassNotFoundException {
         boolean continuar = true;
         Utilidades.limpiarPantalla();
         while (continuar){
@@ -174,7 +152,7 @@ public class UsuarioController implements EventListener {
         return usuario;
     }
 
-    public List<Usuario> menuOperador(List<Usuario> usuarios, Usuario usu) throws InterruptedException {
+    public List<Usuario> menuOperador(List<Usuario> usuarios, Usuario usu) throws InterruptedException, IOException, ClassNotFoundException {
         boolean continuar = true;
         Utilidades.limpiarPantalla();
         while (continuar){
@@ -300,7 +278,7 @@ public class UsuarioController implements EventListener {
         return usuarios.get(n);
     }
 
-    public boolean lanzarDesafio(Usuario usuario) throws InterruptedException {
+    public boolean lanzarDesafio(Usuario usuario) throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
         String nick = Utilidades.pedirCadena("Usuario a desafiar (Nick): ");
         if (nick.equals(usuario.getNick())){

@@ -9,7 +9,7 @@ public class Desafio implements Serializable {
     private Usuario desafiante;
     private Usuario desafiado;
     private int rondas;
-    private LocalDate fecha;
+    private String fecha;
     private int ganador;    //0 = empate; 1 = desafiante; 2 = desafiado
     private int oroApostado;
     private int oroGanado;
@@ -46,12 +46,12 @@ public class Desafio implements Serializable {
         this.rondas = rondas;
     }
 
-    public LocalDate getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
     public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+        this.fecha = fecha.toString();
     }
 
     /**

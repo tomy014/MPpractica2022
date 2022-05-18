@@ -9,8 +9,8 @@ public class Usuario implements Serializable {
     private String nombre;
     private String password;
     private String numReg;
-    private boolean baneado;
-    private int oro = 0;
+    private boolean baneado= false;
+    private int oro = 500;
     protected Personaje pj;
     //tienen 1 personaje, podría no tenerlo si lo da de baja.
 

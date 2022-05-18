@@ -2,7 +2,9 @@ package modelos;
 
 import controlador.Utilidades;
 
-public abstract class Modificadores {
+import java.io.Serializable;
+
+public abstract class Modificadores implements Serializable {
 
     private String nombre;
     private int valor;
