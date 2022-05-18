@@ -1,6 +1,8 @@
 package modelos;
 
-public class Ghouls extends Esbirro{
+import java.io.Serializable;
+
+public class Ghouls extends Esbirro implements Serializable {
 
     private int dependencia;
     private String descripcion;

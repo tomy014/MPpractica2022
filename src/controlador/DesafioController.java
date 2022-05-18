@@ -4,6 +4,7 @@ import modelos.Personaje;
 import modelos.Desafio;
 import modelos.Usuario;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -14,36 +15,57 @@ public class DesafioController {
 
     private List<Desafio> desafios = new ArrayList<Desafio>();
 
-
-    public void cargarDatos() {
-        List<Desafio> listaDesafios = new ArrayList<Desafio>();
-        //obtener del fichero
-        this.desafios = listaDesafios;
-        //establece los desafíos
+    /**
+     * inicia el controlador, obteniendo la lista y guardandola en el controlador.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public void cargarDatos() throws IOException, ClassNotFoundException {
+        this.desafios = Utilidades.getListaDesafios();
     }
 
-    public void cargarDatos(List<Desafio> listaDesafios) {
-        //carga la lista de desafío sque recibe en el fichero
+    /**
+     * recibe una lista, y la guarda en el fichero.
+     * @param listaDesafios
+     * @throws IOException
+     */
+    public void cargarDatos(List<Desafio> listaDesafios) throws IOException {
+        Utilidades.setListaDesafios(listaDesafios);
         this.desafios = listaDesafios;
     }
 
-    public List<Desafio> guardarDatos(List<Desafio> listaDesafios){
-        //guarda la lista que recibe como desafios en el fichero
+    /**
+     * recibe una lista, la guarda en el fichero, y devuelve esta misma lista.
+     * @param listaDesafios
+     * @return devuelve lista actual
+     * @throws IOException
+     */
+    public List<Desafio> guardarDatos(List<Desafio> listaDesafios) throws IOException {
         this.desafios = listaDesafios;
-        //devuelve la lista resultante
+        Utilidades.setListaDesafios(desafios);
         return this.desafios;
     }
 
-    public List<Desafio> guardarDatos(){
-        //guardar la lista de desafios en el fichero
-        return this.desafios;
+    /**
+     * pide al controlador que guarde la lista que tiene en el fichero.
+     * @return lista de desafios acutales
+     * @throws IOException
+     */
+    public List<Desafio> guardarDatos() throws IOException {
+        Utilidades.setListaDesafios(desafios);
+        return desafios;
     }
 
-    public void anyadirDesafio(Desafio desafio) {
-        this.desafios = guardarDatos();
+    /**
+     * actualiza lo existente
+     * @param desafio
+     * @throws IOException
+     */
+    public void anyadirDesafio(Desafio desafio) throws IOException {
+        this.desafios = guardarDatos();//refresca cambios
         //añade nuevo desafío al fichero
         this.desafios.add(desafio);
-        guardarDatos(desafios);
+        desafios=guardarDatos(desafios);//guarda cambios
     }
 
     public List<Desafio> obtenerDesafios() {
@@ -183,7 +205,7 @@ public class DesafioController {
         return exito;
     }
 
-    public void mostrarDesafios() throws InterruptedException {
+    public void mostrarDesafios() throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
         PrincipalController principalController = new PrincipalController();
         principalController.cargarDatos();
@@ -225,7 +247,7 @@ public class DesafioController {
         Utilidades.pause(3);
     }
 
-    public void mostrarDesafios(Usuario u) throws InterruptedException {
+    public void mostrarDesafios(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
         PrincipalController principalController = new PrincipalController();
         principalController.cargarDatos();
@@ -275,19 +297,21 @@ public class DesafioController {
     }
 
 
-    public boolean validarDesafio(int op) throws InterruptedException {
+    public boolean validarDesafio(int op) throws InterruptedException, IOException, ClassNotFoundException {
+        /*
         PrincipalController principalController = new PrincipalController();
         principalController.cargarDatos();
+        */
         this.cargarDatos();
-        int t = this.desafios.size();
-        if (op>t){
-            Utilidades.imprimir("No existe ese desafío...");
-            Utilidades.pause(2);
-            return false;
-        }
         if (desafios.size()<=0){
             Utilidades.imprimir("No hay desafíos registrados por el momento.");
             Utilidades.imprimir("Volviendo...");
+            Utilidades.pause(2);
+            return false;
+        }
+        int t = this.desafios.size();
+        if (op>t){
+            Utilidades.imprimir("No existe ese desafío...");
             Utilidades.pause(2);
             return false;
         }
@@ -320,13 +344,15 @@ public class DesafioController {
             //
             guardarDatos();
             Utilidades.imprimir("Desafío validado, volviendo...");
-            Utilidades.pause(2);
+            Utilidades.pause(1);
 
             return true;
         }
         else if (entero==0){
             desafios.remove(aux);
             guardarDatos();
+            Utilidades.imprimir("Desafío validado, volviendo...");
+            Utilidades.pause(1);
         }
         return false;
     }
@@ -350,7 +376,9 @@ public class DesafioController {
         return d;
     }
 
-    public void removeDesafio(Desafio d) {
+    public void removeDesafio(Desafio d) throws IOException, ClassNotFoundException {
+        this.cargarDatos();
         this.desafios.remove(d);
+        this.guardarDatos();
     }
 }

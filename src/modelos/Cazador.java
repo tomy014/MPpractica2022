@@ -2,10 +2,11 @@ package modelos;
 
 import controlador.Utilidades;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cazador implements Personaje {
+public class Cazador implements Personaje, Serializable {
 
     private int voluntad;
 

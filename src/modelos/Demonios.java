@@ -1,8 +1,9 @@
 package modelos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Demonios extends Esbirro{
+public class Demonios extends Esbirro  implements Serializable {
     //tiene que usar el patrón composite.
 
     private List<Esbirro> esbirros;

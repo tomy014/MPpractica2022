@@ -1,5 +1,7 @@
 package modelos;
 
-public class Operador extends Usuario{
+import java.io.Serializable;
+
+public class Operador extends Usuario implements Serializable {
 
 }

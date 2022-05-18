@@ -1,6 +1,8 @@
 package modelos;
 
-public abstract class Equipo {
+import java.io.Serializable;
+
+public abstract class Equipo implements Serializable {
 
     private String nombre;
     private int modDef;

@@ -1,6 +1,8 @@
 package modelos;
 
-public abstract class Esbirro {
+import java.io.Serializable;
+
+public abstract class Esbirro  implements Serializable {
 
     //Implementar patrón composite
 

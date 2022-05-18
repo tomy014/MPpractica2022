@@ -2,10 +2,11 @@ package modelos;
 
 import controlador.Utilidades;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Vampiro implements Personaje {
+public class Vampiro implements Personaje, Serializable {
 
     private int puntosSangre;
     private int edad;
