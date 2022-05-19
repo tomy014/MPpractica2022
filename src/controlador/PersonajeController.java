@@ -11,20 +11,23 @@ import java.util.List;
 public class PersonajeController {
 
     /**
-     * Recibe el personaje que quiero modificar armas.
+     * Recibe el personaje que quiero modificar armas ACTIVAS.
      * @param pj personaje a modificar
      * @return personaje modificado.
      * @throws InterruptedException
      */
     public Personaje cambiarArmas(Personaje pj) throws InterruptedException {
         Utilidades.limpiarPantalla();
+        Utilidades.imprimir("ARMAS: ");
         List<Arma> armasActivas = pj.getArmasActivas();
-        for (int i = 0; i < armasActivas.size(); i++) {
-            Utilidades.imprimir("Arma actual: " + armasActivas.get(i).getNombre());
+        if (armasActivas!=null){
+            for (int i = 0; i < armasActivas.size(); i++) {
+                Utilidades.imprimir("Arma actual: " + armasActivas.get(i).getNombre());
+            }
         }
         Utilidades.imprimir("");
         List<Arma> disponibles = pj.getArmas();
-        if (disponibles.size()==0){
+        if (disponibles.size()<=0){
             Utilidades.imprimir("No tienes armas, volviendo...");
             Utilidades.pause(1);
             return pj;
@@ -36,19 +39,21 @@ public class PersonajeController {
             else
                 Utilidades.imprimir(i + ": "+ actual.getNombre() + ", de 1 mano");
         }
-        int num = Utilidades.pedirEntero("Elije nuevo arma, -1 para cancelar: ");
-        if (num <0 || num >disponibles.size())
+        int num = Utilidades.pedirEntero("Elije nuevo arma, otro para cancelar: ");
+        if (num <0 || num >=disponibles.size())
             return pj;
+        pj.setArmasActivas(null);
+        armasActivas = new ArrayList<>();
+        pj.setArmasActivas(armasActivas);
         if (disponibles.get(num).isTipo()){
-            armasActivas.clear();
             armasActivas.add(disponibles.get(num));
             pj.setArmasActivas(armasActivas);
         }
         else {
             Arma arma1 = disponibles.get(num);
             armasActivas.add(arma1);
-            num = Utilidades.pedirEntero("Elije otra arma de 1 mano o -1 para cancelar: ");
-            if (num <0 || num >disponibles.size())
+            num = Utilidades.pedirEntero("Elije otra arma de 1 mano u otro para cancelar: ");
+            if (num <0 || num >=disponibles.size())
                 return pj;
             Arma arma2 = disponibles.get(num);
             if (arma2.isTipo() || arma1.equals(arma2))
@@ -62,12 +67,21 @@ public class PersonajeController {
         return pj;
     }
 
+    /**
+     * Modificar armadura ACTIVA
+     * @param pj
+     * @return el pj con la armadura activa cambiada
+     * @throws InterruptedException
+     */
     public Personaje modificarArmadura(Personaje pj) throws InterruptedException {
         Utilidades.limpiarPantalla();
+        Utilidades.imprimir("ARMADURAS: ");
         Armadura armadura = pj.getArmaduraActiva();
+        if (armadura!=null)
+            Utilidades.imprimir("Armadura actual: "+armadura.getNombre());
         List<Armadura> disponibles = pj.getArmaduras();
-        if (disponibles.size()==0){
-            Utilidades.imprimir("No tienes armadura, volviendo...");
+        if (disponibles.size()<=0){
+            Utilidades.imprimir("No tienes armaduras, volviendo...");
             Utilidades.pause(1);
             return pj;
         }
@@ -75,8 +89,8 @@ public class PersonajeController {
             Armadura actual = disponibles.get(i);
             Utilidades.imprimir(i + ": " + actual.getNombre());
         }
-        int num = Utilidades.pedirEntero("Elije nueva armadura, -1 para cancelar: ");
-        if (num <0 || num > disponibles.size())
+        int num = Utilidades.pedirEntero("Elije nueva armadura, otro para cancelar: ");
+        if (num <0 || num >= disponibles.size())
             return pj;
         pj.setArmaduraActiva(disponibles.get(num));
         Utilidades.imprimir("Armadura cambiada. Volviendo...");
@@ -163,12 +177,16 @@ public class PersonajeController {
                 if (o==1) {
                     Arma nueva = crearArma();
                     List<Arma> aux = pj.getArmas();
+                    if (aux==null)
+                        aux= new ArrayList<>();
                     aux.add(nueva);
                     pj.setArmas(aux);
                 }
                 else if (o==2) {
                     Armadura nueva = crearArmadura();
                     List<Armadura> aux = pj.getArmaduras();
+                    if (aux==null)
+                        aux= new ArrayList<>();
                     aux.add(nueva);
                     pj.setArmaduras(aux);
                 }
@@ -181,18 +199,24 @@ public class PersonajeController {
                 if (o==1) {
                     Fortaleza nueva = crearFortaleza();
                     List<Fortaleza> aux = pj.getFortalezas();
+                    if (aux==null)
+                        aux= new ArrayList<>();
                     aux.add(nueva);
                     pj.setFortalezas(aux);
                 }
                 else if (o==2) {
                     Debilidad nueva = crearDebilidad();
                     List<Debilidad> aux = pj.getDebilidades();
+                    if (aux==null)
+                        aux= new ArrayList<>();
                     aux.add(nueva);
                     pj.setDebilidades(aux);
                 }
                 break;
             case 5:
                 List<Esbirro> aux = pj.getEsbirros();
+                if (aux==null)
+                    aux= new ArrayList<>();
                 Esbirro esbirro = pj.crearEsbirros();
                 if (esbirro != null){
                     aux.add(esbirro);
@@ -262,6 +286,11 @@ public class PersonajeController {
 
     private Personaje editarDebilidades(Personaje pj) {
         List<Debilidad> lista = pj.getDebilidades();
+        if (lista==null){
+            Utilidades.imprimir("El personaje no tiene debilidades");
+            Utilidades.imprimir("Volviendo...");
+            return pj;
+        }
         int t = lista.size();
         if (t<=0){
             Utilidades.imprimir("El personaje no tiene debilidades");
@@ -270,24 +299,30 @@ public class PersonajeController {
         }
         for (int i = 0; i < t; i++) {
             Debilidad actual = lista.get(i);
+            if (actual==null)
+                continue;
             Utilidades.imprimir(i+". "+actual.getNombre());
         }
-        t++;
         Utilidades.imprimir(t+". Cancelar operación.");
         int n = -1;
-        while (n <-1 || n > t){
+        while (n <0 || n > t){
             n = Utilidades.pedirEntero("Elije una debilidad");
         }
         if (n==t){
             return pj;
         }
-
-        pj.setDebilidades((List<Debilidad>) pj.getDebilidades().get(n).modificar());
+        if (pj.getDebilidades().get(n)!=null)
+            pj.getDebilidades().get(n).modificar();
         return pj;
     }
 
     private Personaje editarFortalezas(Personaje pj) {
         List<Fortaleza> lista = pj.getFortalezas();
+        if (lista==null){
+            Utilidades.imprimir("El personaje no tiene fortalezas");
+            Utilidades.imprimir("Volviendo...");
+            return pj;
+        }
         int t = lista.size();
         if (t<=0){
             Utilidades.imprimir("El personaje no tiene fortalezas");
@@ -298,21 +333,26 @@ public class PersonajeController {
             Fortaleza actual = lista.get(i);
             Utilidades.imprimir(i+". "+actual.getNombre());
         }
-        t++;
         Utilidades.imprimir(t+". Cancelar operación.");
         int n = -1;
-        while (n <-1 || n > t){
+        while (n <0 || n > t){
             n = Utilidades.pedirEntero("Elije una fortaleza");
         }
         if (n==t){
             return pj;
         }
-        pj.setFortalezas((List<Fortaleza>) pj.getFortalezas().get(n).modificar());
+        if (pj.getFortalezas().get(n)!=null)
+            pj.getFortalezas().get(n).modificar();
         return pj;
     }
 
     private Personaje editarArmas(Personaje pj) {
         List<Arma> lista = pj.getArmas();
+        if (lista==null){
+            Utilidades.imprimir("El personaje no tiene armas");
+            Utilidades.imprimir("Volviendo...");
+            return pj;
+        }
         int t = lista.size();
         if (t<=0){
             Utilidades.imprimir("El personaje no tiene armas");
@@ -323,22 +363,27 @@ public class PersonajeController {
             Arma actual = lista.get(i);
             Utilidades.imprimir(i+". "+actual.getNombre());
         }
-        t++;
         Utilidades.imprimir(t+". Cancelar operación.");
         int n = -1;
-        while (n <-1 || n > t){
+        while (n <0 || n > t){
             n = Utilidades.pedirEntero("Elije un arma");
         }
         if (n==t){
             return pj;
         }
-        pj.setArmas((List<Arma>) pj.getArmas().get(n).modificar());
+        if (pj.getArmas().get(n)!=null)
+            pj.getArmas().get(n).modificar();
         pj.setArmasActivas(null);
         return pj;
     }
 
     private Personaje editarArmaduras(Personaje pj) {
         List<Armadura> lista = pj.getArmaduras();
+        if (lista==null){
+            Utilidades.imprimir("El personaje no tiene armaduras");
+            Utilidades.imprimir("Volviendo...");
+            return pj;
+        }
         int t = lista.size();
         if (t<=0){
             Utilidades.imprimir("El personaje no tiene armaduras");
@@ -351,16 +396,16 @@ public class PersonajeController {
                 continue;
             Utilidades.imprimir(i+". "+actual.getNombre());
         }
-        t++;
         Utilidades.imprimir(t+". Cancelar operación.");
         int n = -1;
-        while (n <-1 || n > t){
+        while (n <0 || n > t){
             n = Utilidades.pedirEntero("Elije una armadura");
         }
         if (n==t){
             return pj;
         }
-        pj.setArmaduras((List<Armadura>) pj.getArmaduras().get(n).modificar());
+        if (pj.getArmaduras().get(n)!=null)
+            pj.getArmaduras().get(n).modificar();
         pj.setArmaduraActiva(null);
         return pj;
     }
@@ -373,8 +418,9 @@ public class PersonajeController {
                 continue;
             int act = -1;
             Utilidades.imprimir("Fortaleza: "+f.getNombre());
-            while (act!=0 || act!=1){
-                Utilidades.pedirEntero("Activar 1, no activa 0");
+
+            while (act<0 || act>1){
+                act = Utilidades.pedirEntero("Activar 1, no activa 0");
             }
             if (act==0)
                 f.setActivo(false);
@@ -395,7 +441,7 @@ public class PersonajeController {
             int act = -1;
             Utilidades.imprimir("Debilidad: "+d.getNombre());
             while (act<0 || act>1){
-                Utilidades.pedirEntero("Activar 1, no activa 0");
+                act = Utilidades.pedirEntero("Activar 1, no activa 0");
             }
             if (act==0)
                 d.setActivo(false);

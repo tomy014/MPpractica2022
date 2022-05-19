@@ -166,7 +166,8 @@ public class Vampiro implements Personaje, Serializable {
     public int calcularAtaque() {
         int ataqueTotal = 0;
         ataqueTotal += this.poder;
-        ataqueTotal += this.armaduraActiva.getModAtq();
+        if (armaduraActiva!=null)
+            ataqueTotal += this.armaduraActiva.getModAtq();
         for(int i = 0; i<this.armasActivas.size(); i++){
             if (this.armasActivas.get(i)==null)
                 continue;
@@ -175,12 +176,14 @@ public class Vampiro implements Personaje, Serializable {
         for(int i = 0; i<this.fortalezas.size(); i++){
             if (this.fortalezas.get(i)==null)
                 continue;
-            ataqueTotal += this.fortalezas.get(i).getValor();
+            if (this.fortalezas.get(i).isActivo())
+                ataqueTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
             if (this.debilidades.get(i)==null)
                 continue;
-            ataqueTotal -= this.debilidades.get(i).getValor();
+            if (this.debilidades.get(i).isActivo())
+                ataqueTotal -= this.debilidades.get(i).getValor();
         }
         if(puntosSangre>=costeHabilidad){
             usarHabilidad();
@@ -195,7 +198,8 @@ public class Vampiro implements Personaje, Serializable {
     public int calcularDefensa() {
         int defensaTotal = 0;
         defensaTotal += this.poder;
-        defensaTotal += armaduraActiva.getModDef();
+        if (armaduraActiva!=null)
+            defensaTotal += armaduraActiva.getModDef();
         for(int i = 0; i<this.armasActivas.size(); i++){
             if (this.armasActivas.get(i)==null)
                 continue;
@@ -204,12 +208,14 @@ public class Vampiro implements Personaje, Serializable {
         for(int i = 0; i<this.fortalezas.size(); i++){
             if (this.fortalezas.get(i)==null)
                 continue;
-            defensaTotal += this.fortalezas.get(i).getValor();
+            if (this.fortalezas.get(i).isActivo())
+                defensaTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
             if (this.debilidades.get(i)==null)
                 continue;
-            defensaTotal -= this.debilidades.get(i).getValor();
+            if (this.debilidades.get(i).isActivo())
+                defensaTotal -= this.debilidades.get(i).getValor();
         }
         if(puntosSangre>=costeHabilidad){
             usarHabilidad();

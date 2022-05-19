@@ -1,5 +1,6 @@
 package Observer;
 
+import controlador.Utilidades;
 import modelos.Usuario;
 
 import java.io.File;
@@ -15,5 +16,6 @@ public class DesafiosObserver {
 
     public void notificarDesafio(){
         events.notify("desafio");
+        Utilidades.imprimir("Tienes un desafío!!!");
     }
 }

@@ -35,18 +35,6 @@ public class DesafioController {
     }
 
     /**
-     * recibe una lista, la guarda en el fichero, y devuelve esta misma lista.
-     * @param listaDesafios
-     * @return devuelve lista actual
-     * @throws IOException
-     */
-    public List<Desafio> guardarDatos(List<Desafio> listaDesafios) throws IOException {
-        this.desafios = listaDesafios;
-        Utilidades.setListaDesafios(desafios);
-        return this.desafios;
-    }
-
-    /**
      * pide al controlador que guarde la lista que tiene en el fichero.
      * @return lista de desafios acutales
      * @throws IOException
@@ -61,11 +49,10 @@ public class DesafioController {
      * @param desafio
      * @throws IOException
      */
-    public void anyadirDesafio(Desafio desafio) throws IOException {
-        this.desafios = guardarDatos();//refresca cambios
-        //añade nuevo desafío al fichero
-        this.desafios.add(desafio);
-        desafios=guardarDatos(desafios);//guarda cambios
+    public void anyadirDesafio(Desafio desafio) throws IOException, ClassNotFoundException {
+        cargarDatos(); //refresca cambios
+        this.desafios.add(desafio); //añade nuevo desafío al fichero
+        guardarDatos();
     }
 
     public List<Desafio> obtenerDesafios() {
@@ -73,7 +60,7 @@ public class DesafioController {
         return this.desafios;
     }
 
-    public void notificar(Usuario u) throws InterruptedException {
+    public void notificar(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
         //decir que el usuario tiene desafio, ejecuta si lo realiza o no.
         for (Desafio d: desafios) {
             if (d == null)
@@ -106,12 +93,15 @@ public class DesafioController {
         Personaje desafiado = d.getDesafiado().getPj();
         int saludAtacante = atacante.getSalud();
         int saludDesafiado = desafiado.getSalud();
-        PersonajeController controller = new PersonajeController();
         int saludEsbirrosAtq= atacante.saludEsbirros();
         int saludEsbirrosDes = desafiado.saludEsbirros();
         saludAtacante+=saludEsbirrosAtq;
         saludDesafiado+=saludEsbirrosDes;
         int rondas=0;
+        Utilidades.limpiarPantalla();
+        Utilidades.imprimir("Comienza el combate....");
+        Utilidades.imprimir("");
+        Utilidades.pause(1);
         while (saludAtacante>0 && saludDesafiado>0){
             //ejecución de una ronda hasta que alguien se queda sin salud
 
@@ -126,7 +116,10 @@ public class DesafioController {
                 atacante.ganarRonda();
                 saludDesafiado--;
             }
+            else
+                Utilidades.imprimir("Ataque fallido.");
             //ahora el desafiado prueba a defenderse.
+            Utilidades.imprimir("");
             Utilidades.imprimir("Turno defensor.");
             int atqDesafiado = desafiado.calcularAtaque();
             atqDesafiado=totalAtaque(atqDesafiado);
@@ -137,8 +130,12 @@ public class DesafioController {
                 atacante.perderRonda();
                 saludAtacante--;
             }
+            else
+                Utilidades.imprimir("Ataque fallido.");
+            Utilidades.imprimir("");
             Utilidades.imprimir("Fin ronda.");
-            Utilidades.pause(1);
+            Utilidades.pause(3);
+            Utilidades.imprimir("");
             rondas++;
         }
         //alguien se ha quedado sin salud
@@ -147,7 +144,6 @@ public class DesafioController {
         if (saludAtacante<=0 && saludDesafiado<=0){
             d.setGanador(0);//EMPATE
             Utilidades.imprimir("RESULTADO: EMPATE");
-
         } else if (saludAtacante<=0) {
             d.setGanador(2);//GANA DESAFIADO
             Utilidades.imprimir("RESULTADO: GANA EL DESAFIADO");
@@ -158,7 +154,7 @@ public class DesafioController {
             desafiado.setOro(desafiado.getOro()+d.getOroApostado());
             d.getDesafiado().setOro(d.getDesafiado().getOro()+d.getOroApostado());
         }else {
-            d.setGanador(1);//GANA DESAFIANTE
+            d.setGanador(1);//GANA DESAFIANTE/ATACANTE
             Utilidades.imprimir("RESULTADO: GANA EL ATACANTE");
 
             atacante.setOro(atacante.getOro()+d.getOroApostado());
@@ -176,17 +172,12 @@ public class DesafioController {
         return d;
     }
 
-    public int[] ejecutarRonda(Personaje atacante, Personaje desafiado){
-
-        return new int[0];
-    }
-
     public int totalAtaque(int ataque){
         int exito = 0;
         for (int i=0;i<ataque;i++){
             Random random = new Random();
-            int valor = random.nextInt(7)+1;
-            if (valor>=5 || valor<=6){
+            int valor = random.nextInt(7);
+            if (valor==5 || valor==6){
                 exito++;
             }
         }
@@ -197,8 +188,8 @@ public class DesafioController {
         int exito = 0;
         for (int i=0;i<defensa;i++){
             Random random = new Random();
-            int valor = random.nextInt(7)+1;
-            if (valor>=5 && valor<=6){
+            int valor = random.nextInt(7);
+            if (valor==5 || valor==6){
                 exito++;
             }
         }
@@ -207,8 +198,7 @@ public class DesafioController {
 
     public void mostrarDesafios() throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
-        PrincipalController principalController = new PrincipalController();
-        principalController.cargarDatos();
+        cargarDatos();
         List<Desafio> aux = desafios;
         Utilidades.imprimir("LISTADO DESAFIOS (desde último reinicio): ");
         Utilidades.imprimir("");
@@ -219,26 +209,27 @@ public class DesafioController {
             Utilidades.imprimir("Desafío "+Integer.toString(i)+": ");
             Utilidades.imprimir("Nick desafiado: "+actual.getDesafiado().getNick());
             Utilidades.imprimir("Nick desafiante: "+actual.getDesafiante().getNick());
-            Utilidades.imprimir("Fecha: "+actual.getFecha().toString());
-            if (actual.isValidado())
-                Utilidades.imprimir("Desafío validado.");
-            else
+            Utilidades.imprimir("Fecha: "+actual.getFecha());
+            if (!actual.isValidado())
                 Utilidades.imprimir("Desafío NO validado");
-            if (actual.getGanador()==0){
-                Utilidades.imprimir("Ganador: Empate");
-            }
-            else if (actual.getGanador()==1){
-                Utilidades.imprimir("Ganador: "+actual.getDesafiante().getNick());
-            }
-            else if (actual.getGanador()==2) {
-                Utilidades.imprimir(actual.getDesafiado().getNick());
-            }
-            else
-                Utilidades.imprimir("Ganador: No disputado");
-            if (actual.getGanador()<0){
-                Utilidades.imprimir("Rondas empleadas: "+actual.getRondas());
-                Utilidades.imprimir("Oro apostado: "+actual.getOroApostado());
-                Utilidades.imprimir("Oro ganado: "+actual.getOroGanado());
+            else {
+                Utilidades.imprimir("Desafío validado.");
+                if (actual.getGanador()>=0){
+                    if (actual.getGanador()==0){
+                        Utilidades.imprimir("Ganador: Empate");
+                    }
+                    else if (actual.getGanador()==1){
+                        Utilidades.imprimir("Ganador: "+actual.getDesafiante().getNick());
+                    }
+                    else if (actual.getGanador()==2) {
+                        Utilidades.imprimir(actual.getDesafiado().getNick());
+                    }
+                    Utilidades.imprimir("Rondas empleadas: "+actual.getRondas());
+                    Utilidades.imprimir("Oro apostado: "+actual.getOroApostado());
+                    Utilidades.imprimir("Oro ganado: "+actual.getOroGanado());
+                }
+                else
+                    Utilidades.imprimir("Ganador: No disputado");
             }
             Utilidades.imprimir("");
             Utilidades.imprimir("--------------------------------------");
@@ -249,8 +240,7 @@ public class DesafioController {
 
     public void mostrarDesafios(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
-        PrincipalController principalController = new PrincipalController();
-        principalController.cargarDatos();
+        cargarDatos();
         String nick = u.getNick();
         List<Desafio> aux = desafios;
         Utilidades.imprimir("LISTADO DESAFIOS (desde último reinicio): ");
@@ -263,45 +253,41 @@ public class DesafioController {
                 continue;
             if (actual.getGanador()<0)
                 continue;
-            if (!actual.getDesafiado().equals(nick))
-                continue;
-            if (!actual.getDesafiante().equals(nick))
+            if (!actual.getDesafiado().getNick().equals(nick) && !actual.getDesafiante().getNick().equals(nick))
                 continue;
             Utilidades.imprimir("Nick desafiado: "+actual.getDesafiado().getNick());
             Utilidades.imprimir("Nick desafiante: "+actual.getDesafiante().getNick());
-            Utilidades.imprimir("Fecha: "+actual.getFecha().toString());
-            if (actual.isValidado())
-                Utilidades.imprimir("Desafío validado.");
-            else
+            Utilidades.imprimir("Fecha: "+actual.getFecha());
+            if (!actual.isValidado())
                 Utilidades.imprimir("Desafío NO validado");
-            if (actual.getGanador()==0){
-                Utilidades.imprimir("Ganador: Empate");
-            }
-            else if (actual.getGanador()==1){
-                Utilidades.imprimir("Ganador: "+actual.getDesafiante().getNick());
-            }
-            else if (actual.getGanador()==2) {
-                Utilidades.imprimir(actual.getDesafiado().getNick());
-            }
-            else
-                Utilidades.imprimir("Ganador: No disputado");
-            if (actual.getGanador()<0){
-                Utilidades.imprimir("Rondas empleadas: "+actual.getRondas());
-                Utilidades.imprimir("Oro apostado: "+actual.getOroApostado());
-                Utilidades.imprimir("Oro ganado: "+actual.getOroGanado());
+            else {
+                Utilidades.imprimir("Desafío validado.");
+                if (actual.getGanador()>=0){
+                    if (actual.getGanador()==0){
+                        Utilidades.imprimir("Ganador: Empate");
+                    }
+                    else if (actual.getGanador()==1){
+                        Utilidades.imprimir("Ganador: "+actual.getDesafiante().getNick());
+                    }
+                    else if (actual.getGanador()==2) {
+                        Utilidades.imprimir(actual.getDesafiado().getNick());
+                    }
+                    Utilidades.imprimir("Rondas empleadas: "+actual.getRondas());
+                    Utilidades.imprimir("Oro apostado: "+actual.getOroApostado());
+                    Utilidades.imprimir("Oro ganado: "+actual.getOroGanado());
+                }
+                else
+                    Utilidades.imprimir("Ganador: No disputado");
             }
             Utilidades.imprimir("");
             Utilidades.imprimir("--------------------------------------");
             Utilidades.imprimir("");
         }
+        Utilidades.pause(4);
     }
 
 
     public boolean validarDesafio(int op) throws InterruptedException, IOException, ClassNotFoundException {
-        /*
-        PrincipalController principalController = new PrincipalController();
-        principalController.cargarDatos();
-        */
         this.cargarDatos();
         if (desafios.size()<=0){
             Utilidades.imprimir("No hay desafíos registrados por el momento.");
@@ -313,6 +299,9 @@ public class DesafioController {
         if (op>t){
             Utilidades.imprimir("No existe ese desafío...");
             Utilidades.pause(2);
+            return false;
+        }
+        if (op<0 || op>=desafios.size()){
             return false;
         }
         Desafio desafio = desafios.get(op);
@@ -351,21 +340,25 @@ public class DesafioController {
         else if (entero==0){
             desafios.remove(aux);
             guardarDatos();
-            Utilidades.imprimir("Desafío validado, volviendo...");
+            Utilidades.imprimir("Desafío eliminado, volviendo...");
             Utilidades.pause(1);
+            return false;
         }
         return false;
     }
 
-    public Desafio rechazarDesafio(Desafio d) {
+    public Desafio rechazarDesafio(Desafio d) throws IOException, ClassNotFoundException {
+        //cargarDatos();
         Desafio aux = d;
         desafios.remove(aux);
         d.setFecha(LocalDate.now());
-        d.setGanador(2);
-        double oro = d.getOroGanado();
+        d.setGanador(1);
+        d.setRondas(0);
+
+        double oro = d.getOroApostado();
         oro = oro*0.10;
         d.setOroGanado((int) oro);
-        Utilidades.imprimir("Oro perdido: "+Integer.toString((int) oro));
+        Utilidades.imprimir("Oro perdido: "+(int) oro);
 
         d.getDesafiante().getPj().setOro(d.getDesafiante().getOro()+(int) oro);
         d.getDesafiado().getPj().setOro(d.getDesafiado().getOro()-(int) oro);
@@ -373,11 +366,11 @@ public class DesafioController {
         d.getDesafiado().setOro(d.getDesafiado().getOro()-(int) oro);
 
         desafios.add(d);
+        guardarDatos();
         return d;
     }
 
     public void removeDesafio(Desafio d) throws IOException, ClassNotFoundException {
-        this.cargarDatos();
         this.desafios.remove(d);
         this.guardarDatos();
     }
