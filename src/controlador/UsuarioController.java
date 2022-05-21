@@ -188,12 +188,12 @@ public class UsuarioController implements EventListener {
                         verDesafios();//Pone la lista de desafios en pantalla
                         int op = Utilidades.pedirEntero("Selecciona desafio o -1 cancelar: ");
                         DesafioController desafioController = new DesafioController();
+                        desafioController.cargarDatos();
                         boolean validado=desafioController.validarDesafio(op);
                         if (validado){
                             //añadir este usuario a la lista de suscriptores de notificacion desafio
                             DesafiosObserver ob= new DesafiosObserver();
                             ob.notificarDesafio();
-
                         }
                         break;
                     case 3:
@@ -233,7 +233,6 @@ public class UsuarioController implements EventListener {
                     case 5:
                         //Ver historial de desafíos
                         verDesafios();
-
                         break;
                     case 6:
                         if(darseBaja()){
@@ -270,8 +269,7 @@ public class UsuarioController implements EventListener {
         }
         //t++;
         Utilidades.imprimir("Otro para cancelar operación.");
-        int n = -1;
-        n = Utilidades.pedirEntero(motivo);
+        int n = Utilidades.pedirEntero(motivo);
         if (n>=t || n<0){
             return null;
         }
@@ -293,7 +291,6 @@ public class UsuarioController implements EventListener {
             Utilidades.pause(2);
             return false;
         }
-
         int oro = usuario.getPj().getOro();
         if (oro<=0){
             Utilidades.imprimir("No tienes suficiente oro, volviendo...");
@@ -311,14 +308,16 @@ public class UsuarioController implements EventListener {
         //Crear desafío
         DesafioController desafioController = new DesafioController();
         Desafio desafio = new Desafio();
+        desafioController.cargarDatos();//carga la lista de desafíos actuales.
         desafio.setDesafiado(rival);
         desafio.setDesafiante(usuario);
         desafio.setFecha(LocalDate.now());
-        desafio.setOroApostado(oro);
+        desafio.setOroApostado(apuesta);
         desafio.setGanador(-1);
         desafio.setOroGanado(-1);
         desafio.setValidado(false);
-        desafioController.anyadirDesafio(desafio);
+        desafioController.anyadirDesafio(desafio);//lo añade
+        desafioController.guardarDatos();//lo guarda en el fichero
         Utilidades.imprimir("Desafío guardado, pendiente de aprobación, volviendo...");
         Utilidades.pause(2);
         return true;

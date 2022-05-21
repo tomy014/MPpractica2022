@@ -186,15 +186,17 @@ public class Licantropo implements Personaje, Serializable {
     @Override
     public void perderRonda() {
         rabia ++;
+        if (rabia>3)
+            rabia=3;
         Utilidades.imprimir("Ronda perdida para " + this.nombre);
-        //comprobar que sólo sea si le resto vida al licantropo y no a sus esbirros.
     }
 
     @Override
     public int calcularAtaque() {
         int ataqueTotal = 0;
         ataqueTotal += this.poder;
-        ataqueTotal += this.armaduraActiva.getModAtq();
+        if (armaduraActiva!=null)
+            ataqueTotal += this.armaduraActiva.getModAtq();
         for(int i = 0; i<this.armasActivas.size(); i++){
             if (this.armasActivas.get(i)==null)
                 continue;
@@ -203,18 +205,20 @@ public class Licantropo implements Personaje, Serializable {
         for(int i = 0; i<this.fortalezas.size(); i++){
             if (this.fortalezas.get(i)==null)
                 continue;
-            ataqueTotal += this.fortalezas.get(i).getValor();
+            if (this.fortalezas.get(i).isActivo())
+                ataqueTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
-            if (this.fortalezas.get(i)==null)
+            if (this.debilidades.get(i)==null)
                 continue;
-            ataqueTotal -= this.debilidades.get(i).getValor();
+            if (this.debilidades.get(i).isActivo())
+                ataqueTotal -= this.debilidades.get(i).getValor();
         }
+        ataqueTotal += rabia;
         if(rabia>=costeHabilidad){
             usarHabilidad();
             ataqueTotal += this.atqHab;
         }
-        ataqueTotal += rabia;
         return ataqueTotal;
     }
 
@@ -222,7 +226,8 @@ public class Licantropo implements Personaje, Serializable {
     public int calcularDefensa() {
         int defensaTotal = 0;
         defensaTotal += this.poder;
-        defensaTotal += armaduraActiva.getModDef();
+        if (armaduraActiva!=null)
+            defensaTotal += armaduraActiva.getModDef();
         for(int i = 0; i<this.armasActivas.size(); i++){
             if (this.armasActivas.get(i)==null)
                 continue;
@@ -231,18 +236,20 @@ public class Licantropo implements Personaje, Serializable {
         for(int i = 0; i<this.fortalezas.size(); i++){
             if (this.fortalezas.get(i)==null)
                 continue;
-            defensaTotal += this.fortalezas.get(i).getValor();
+            if (this.fortalezas.get(i).isActivo())
+                defensaTotal += this.fortalezas.get(i).getValor();
         }
         for(int i = 0; i<this.debilidades.size(); i++){
             if (this.debilidades.get(i)==null)
                 continue;
-            defensaTotal -= this.debilidades.get(i).getValor();
+            if (this.debilidades.get(i).isActivo())
+                defensaTotal -= this.debilidades.get(i).getValor();
         }
+        defensaTotal += rabia;
         if(rabia>=costeHabilidad){
             usarHabilidad();
             defensaTotal += this.defHab;
         }
-        defensaTotal += rabia;
         return defensaTotal;
     }
 

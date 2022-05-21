@@ -9,6 +9,7 @@ import modelos.Usuario;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.InputMismatchException;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class PrincipalController {
         //this.usuarios = Utilidades.getListaUsuarios();
         //Operador de pruebas.
 
-        //  OPERADOR DE PRUEBAS
+        //  OPERADOR PARA LAS PRUEBAS
         Operador operador = new Operador();
         operador.setNick("tomy");
         operador.setNombre("Alberto");
@@ -54,7 +55,7 @@ public class PrincipalController {
     public void guardarDatos() throws IOException {
         //recoge la lista de usuarios, y la guarda en fichero.
         Utilidades.setListaUsuarios(this.usuarios);
-        Utilidades.setListaDesafios(desafioController.guardarDatos());
+        //Utilidades.setListaDesafios(desafioController.guardarDatos());
     }
 
     /**
@@ -66,7 +67,34 @@ public class PrincipalController {
         cargarDatos();//CARGA LOS DATOS QUE HAYA GUARDADOS.
         boolean continuar = true;
         while (continuar)
-            continuar = pantallaLogin();
+            try {
+                continuar = pantallaLogin();
+            }
+            catch (IOException e){
+                Utilidades.limpiarPantalla();
+                e.printStackTrace();
+                Utilidades.imprimir("Se ha producido un error en la aplicación, se va a reiniciar...");
+                cargarDatos();
+                Utilidades.pause(5);
+                continuar=true;
+            }
+            catch (InputMismatchException e){
+                Utilidades.limpiarPantalla();
+                e.printStackTrace();
+                Utilidades.imprimir("Se ha producido un error en la aplicación, error en el tipo de datos introducido.");
+                Utilidades.imprimir("Se va a reiniciar la aplicación...");
+                cargarDatos();
+                Utilidades.pause(5);
+                continuar=true;
+            }
+            catch (NullPointerException e){
+                Utilidades.limpiarPantalla();
+                e.printStackTrace();
+                Utilidades.imprimir("Se ha producido un error en la aplicación, se va a reiniciar...");
+                cargarDatos();
+                Utilidades.pause(5);
+                continuar=true;
+            }
         guardarDatos();//GUARDA LOS DATOS
     }
 
@@ -76,7 +104,7 @@ public class PrincipalController {
      */
     public boolean pantallaLogin() throws InterruptedException, IOException, ClassNotFoundException {
         Utilidades.limpiarPantalla();
-        Utilidades.imprimir("AVISO, puede ser necesario cerrar la aplicación para aplciar cambios en su PJ.");
+        Utilidades.imprimir("AVISO, puede ser necesario reiniciar la aplicación para aplciar cambios en su PJ.");
         Utilidades.imprimir("");
         Utilidades.imprimir("1.- Iniciar sesión.");
         Utilidades.imprimir("2.- Registrarse.");
@@ -93,6 +121,7 @@ public class PrincipalController {
             else
                 Utilidades.imprimir("Opción incorrecta");
         }
+        guardarDatos();
         return true;
     }
 
@@ -111,6 +140,7 @@ public class PrincipalController {
             Utilidades.pause(2);
             return;
         }
+        usu.rellenarDatos();
         boolean existe = false;
         if( usuarios.isEmpty()){
             usuarios.add(usu);
@@ -142,7 +172,7 @@ public class PrincipalController {
      * la sesión.
      * @throws InterruptedException
      */
-    public void iniciarSesion() throws InterruptedException, IOException, ClassNotFoundException {
+    public boolean iniciarSesion() throws InterruptedException, IOException, ClassNotFoundException {
         String nombre = Utilidades.pedirCadena("Usuario: ");
         String pass = Utilidades.pedirCadena("Contraseña: ");
         boolean encontrado= false;
@@ -153,22 +183,40 @@ public class PrincipalController {
                 if (u.getPassword().equals(pass)){
                     encontrado=true;
                     UsuarioController usuarioController = new UsuarioController();
+                    //MIRAR SI ESTÁ BANEADO.
+                    if (u.isBaneado()){
+                        Utilidades.limpiarPantalla();
+                        Utilidades.imprimir("Estás baneado, acceso denegado.");
+                        Utilidades.imprimir("Contacte con un operador.");
+                        Utilidades.pause(3);
+                        return false;
+                    }
                     //PANTALLA DESAFÍOS, COMPROBAR SI TIENE UN DESAFÍO ANTES DE NADA
                     DesafiosObserver observer = new DesafiosObserver();
                     observer.events.subscribe("desafio",new UsuarioController());
-                    comprobarDesafios(u);
-                    u = buscarUsuario(u.getNick());//actualizar usuario por si ha habido desafio y ha cambiado.
+                    usuarios.remove(u);
+                    Usuario usu = comprobarDesafios(u);
+                    Usuario aux = buscarUsuario(usu.getNick());
+                    if (aux==null)
+                        usuarios.add(usu);
+                    guardarDatos();
+                    if (!usu.equals(u)){
+                        Utilidades.imprimir("Se va a cerrar sesión por precaución, vuelva a entrar...");
+                        Utilidades.pause(2);
+                        break;
+                    }
+                    //usuarios.add(u);
+                    usu = buscarUsuario(usu.getNick()); //actualizar usuario por si ha habido desafio y ha cambiado.
                     if (u.getClass().toString().equals("class modelos.Operador")) {
-                        List<Usuario> modificados = usuarioController.menuOperador(usuarios, u);
-                        this.usuarios.clear();
+                        List<Usuario> modificados = usuarioController.menuOperador(usuarios, usu);
                         usuarios = modificados;
                         guardarDatos();
                     }
                     else {
-                        Usuario modificado = usuarioController.menuUsuario(u);
-                        this.usuarios.remove(u);
+                        Usuario modificado = usuarioController.menuUsuario(usu);
+                        usuarios.remove(usu);
                         if (modificado!=null)
-                            this.usuarios.add(modificado);
+                            usuarios.add(modificado);
                     }
                     break;
                 }
@@ -176,10 +224,13 @@ public class PrincipalController {
         if (!encontrado){
             Utilidades.imprimir("Datos incorrectos, volviendo al menú...");
             Utilidades.pause(2);
+            return false;
         }
+        return true;
     }
 
-    private void comprobarDesafios(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
+    private Usuario comprobarDesafios(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
+        desafioController.cargarDatos();
         List<Desafio> listaDesafios = desafioController.obtenerDesafios();
         for (Desafio d: listaDesafios) {
             if (d == null)
@@ -187,50 +238,70 @@ public class PrincipalController {
             if(d.getDesafiado().getNick().equals(u.getNick())){
                 if (d.isValidado() && d.getGanador()<0){//el desafio no se ha disputado aún
                     //TIENE DESAFIO
+                    DesafiosObserver observer = new DesafiosObserver();
+                    observer.notificarDesafio();
                     Utilidades.limpiarPantalla();
                     int respuesta = -1;
-                    while (respuesta<0 && respuesta>1){
+                    while (respuesta<0 || respuesta>1){
                         Utilidades.imprimir("Tienes un desafio de "+d.getDesafiante().getNick());
                         respuesta = Utilidades.pedirEntero("¿Quieres aceptar el desafio? 0 = NO // 1 = SI");
                     }
                     if (respuesta==0){
                         Desafio desafio = desafioController.rechazarDesafio(d);
-                        usuarios.remove(u);
                         u = desafio.getDesafiado();
                         Utilidades.imprimir("Tu nuevo oro es: "+u.getOro());
                         Usuario aux =buscarUsuario(d.getDesafiante().getNick());
                         usuarios.remove(aux);
                         usuarios.add(desafio.getDesafiante());
-                        usuarios.add(u);
-                        return;
+                        guardarDatos();
+                        Usuario aux2 = buscarUsuario(u.getNick());
+                        usuarios.remove(aux2);
+                        usuarios.add(desafio.getDesafiado());
                     }
                     else {
                         //realizar desafio
+                        u = buscarUsuario(u.getNick());
                         usuarios.remove(u);
+                        usuarios.remove(d.getDesafiado());
+                        Usuario atacante = buscarUsuario(d.getDesafiante().getNick());
+                        usuarios.remove(atacante);
+                        usuarios.remove(d.getDesafiante());
+                        desafioController.removeDesafio(d);
+                        desafioController.guardarDatos();
+                        guardarDatos();
                         PersonajeController personajeController = new PersonajeController();
                         Personaje pj = u.getPj();
+                        Utilidades.imprimir("Puedes cambiar tu equipamiento activo antes de empezar: ");
+                        Utilidades.pause(2);
                         pj = personajeController.cambiarArmas(pj);
                         pj = personajeController.modificarArmadura(pj);
                         u.setPj(pj);
-                        desafioController.removeDesafio(d);
                         d.setDesafiado(u);
-                        d = desafioController.iniciarDesafio(d);
-                        u = d.getDesafiado();
+                        usuarios.remove(d.getDesafiado());
+                        usuarios.remove(d.getDesafiante());
+                        Desafio resultado = desafioController.iniciarDesafio(d);
+                        u = resultado.getDesafiado();
                         Usuario aux =buscarUsuario(d.getDesafiante().getNick());
+                        Usuario aux2 = buscarUsuario(u.getNick());
                         usuarios.remove(aux);
-                        usuarios.add(d.getDesafiante());
+                        usuarios.remove(aux2);
                         usuarios.add(u);
-                        return;
+                        usuarios.add(resultado.getDesafiante());
+                        desafioController.anyadirDesafio(d);
                     }
+                    guardarDatos();
+                    desafioController.cargarDatos(listaDesafios);
+                    observer.events.unsubscribe("desafio",new UsuarioController());
+                    Utilidades.pause(2);
                 }
             }
         }
+        return u;
     }
 
 
     public Usuario buscarUsuario(String nick) throws IOException, ClassNotFoundException {
-        guardarDatos();
-        cargarDatos();
+        cargarDatos(); //ESTA LINEA SE COMENTA SOLO PARA HACER LAS PRUEBAS, METODO TEST DA ERROR CON
         for (Usuario u : usuarios) {
             if (u==null)
                 continue;
@@ -253,5 +324,9 @@ public class PrincipalController {
             Utilidades.imprimir(Integer.toString(i + 1) +".- "+ aux.get(i).getNick() +" "+ aux.get(i).getOro());
         Utilidades.pause(3);
         Utilidades.limpiarPantalla();
+    }
+
+    public void setUsuarios(List<Usuario> lista){
+        this.usuarios=lista;
     }
 }

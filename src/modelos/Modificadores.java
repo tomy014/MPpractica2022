@@ -36,9 +36,9 @@ public abstract class Modificadores implements Serializable {
 
     public Modificadores modificar() {
         Utilidades.limpiarPantalla();
-        Utilidades.imprimir(this.getNombre());
+        Utilidades.imprimir("Nombre : " +this.getNombre());
         this.setNombre(Utilidades.pedirCadena("Introduce nuevo nombre: "));
-        Utilidades.imprimir(Integer.toString(this.getValor()));
+        Utilidades.imprimir("Valor: " + this.getValor());
         this.setValor(Utilidades.pedirEntero("Introduce nuevo valor: "));
         this.setActivo(false);
         return this;
