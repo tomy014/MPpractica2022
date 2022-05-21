@@ -31,7 +31,7 @@ public class PrincipalController {
         //this.usuarios = Utilidades.getListaUsuarios();
         //Operador de pruebas.
 
-        //  OPERADOR DE PRUEBAS
+        //  OPERADOR PARA LAS PRUEBAS
         Operador operador = new Operador();
         operador.setNick("tomy");
         operador.setNombre("Alberto");
@@ -140,6 +140,7 @@ public class PrincipalController {
             Utilidades.pause(2);
             return;
         }
+        usu.rellenarDatos();
         boolean existe = false;
         if( usuarios.isEmpty()){
             usuarios.add(usu);
@@ -171,7 +172,7 @@ public class PrincipalController {
      * la sesión.
      * @throws InterruptedException
      */
-    public void iniciarSesion() throws InterruptedException, IOException, ClassNotFoundException {
+    public boolean iniciarSesion() throws InterruptedException, IOException, ClassNotFoundException {
         String nombre = Utilidades.pedirCadena("Usuario: ");
         String pass = Utilidades.pedirCadena("Contraseña: ");
         boolean encontrado= false;
@@ -188,7 +189,7 @@ public class PrincipalController {
                         Utilidades.imprimir("Estás baneado, acceso denegado.");
                         Utilidades.imprimir("Contacte con un operador.");
                         Utilidades.pause(3);
-                        return;
+                        return false;
                     }
                     //PANTALLA DESAFÍOS, COMPROBAR SI TIENE UN DESAFÍO ANTES DE NADA
                     DesafiosObserver observer = new DesafiosObserver();
@@ -223,7 +224,9 @@ public class PrincipalController {
         if (!encontrado){
             Utilidades.imprimir("Datos incorrectos, volviendo al menú...");
             Utilidades.pause(2);
+            return false;
         }
+        return true;
     }
 
     private Usuario comprobarDesafios(Usuario u) throws InterruptedException, IOException, ClassNotFoundException {
@@ -298,7 +301,7 @@ public class PrincipalController {
 
 
     public Usuario buscarUsuario(String nick) throws IOException, ClassNotFoundException {
-        cargarDatos();
+        cargarDatos(); //ESTA LINEA SE COMENTA SOLO PARA HACER LAS PRUEBAS, METODO TEST DA ERROR CON
         for (Usuario u : usuarios) {
             if (u==null)
                 continue;
@@ -321,5 +324,9 @@ public class PrincipalController {
             Utilidades.imprimir(Integer.toString(i + 1) +".- "+ aux.get(i).getNick() +" "+ aux.get(i).getOro());
         Utilidades.pause(3);
         Utilidades.limpiarPantalla();
+    }
+
+    public void setUsuarios(List<Usuario> lista){
+        this.usuarios=lista;
     }
 }

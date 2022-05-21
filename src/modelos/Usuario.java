@@ -9,10 +9,17 @@ public class Usuario implements Serializable {
     private String nombre;
     private String password;
     private String numReg;
-    private boolean baneado= false;
-    private int oro = 500;
+    private boolean baneado;
+    private int oro;
     protected Personaje pj;
     //tienen 1 personaje, podría no tenerlo si lo da de baja.
+
+    public void rellenarDatos(){
+        this.baneado=false;
+        this.pj = null;
+        this.oro = 500;
+        this.numReg = crearRegistro();
+    }
 
     public String getNick() {
         return nick;
@@ -72,5 +79,18 @@ public class Usuario implements Serializable {
 
     public void setOro(int oro) {
         this.oro = oro;
+    }
+
+    private String crearRegistro() {
+        String cadena="";
+        /*cadena+=Utilidades.letraAleatoria();
+        cadena+=Utilidades.numAleatorio();
+        cadena+=Utilidades.numAleatorio();
+        cadena+=Utilidades.letraAleatoria();
+        cadena+=Utilidades.letraAleatoria();
+         */
+        cadena="l12vw";
+        cadena.toUpperCase();
+        return cadena;
     }
 }

@@ -154,6 +154,8 @@ public class Vampiro implements Personaje, Serializable {
     @Override
     public void ganarRonda() {
         puntosSangre += 4;
+        if (puntosSangre>10)
+            puntosSangre=10;
         Utilidades.imprimir("Ronda ganada para " + this.nombre);
     }
 

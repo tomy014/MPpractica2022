@@ -155,7 +155,8 @@ public class Cazador implements Personaje, Serializable {
 
     @Override
     public void perderRonda() {
-        voluntad --;
+        if (voluntad>0)
+            voluntad --;
         Utilidades.imprimir("Ronda perdida para " + this.nombre);
     }
 

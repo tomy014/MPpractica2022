@@ -233,7 +233,6 @@ public class UsuarioController implements EventListener {
                     case 5:
                         //Ver historial de desafíos
                         verDesafios();
-
                         break;
                     case 6:
                         if(darseBaja()){
@@ -270,8 +269,7 @@ public class UsuarioController implements EventListener {
         }
         //t++;
         Utilidades.imprimir("Otro para cancelar operación.");
-        int n = -1;
-        n = Utilidades.pedirEntero(motivo);
+        int n = Utilidades.pedirEntero(motivo);
         if (n>=t || n<0){
             return null;
         }

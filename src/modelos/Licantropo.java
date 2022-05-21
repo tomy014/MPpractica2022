@@ -186,8 +186,9 @@ public class Licantropo implements Personaje, Serializable {
     @Override
     public void perderRonda() {
         rabia ++;
+        if (rabia>3)
+            rabia=3;
         Utilidades.imprimir("Ronda perdida para " + this.nombre);
-        //comprobar que sólo sea si le resto vida al licantropo y no a sus esbirros.
     }
 
     @Override
